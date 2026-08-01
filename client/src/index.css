@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #2563eb;
+  --color-primary-dark: #1d4ed8;
+  --color-secondary: #4f46e5;
+  --color-accent: #06b6d4;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  
+  --font-sans: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+  
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-scan: scan-line 2.5s ease-in-out infinite;
+  --animate-radar: radar-pulse 2s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+}
+
+@layer base {
+  body {
+    @apply transition-colors duration-300 antialiased font-sans m-0 p-0;
+    @apply bg-slate-50/50 text-slate-900;
+  }
+  
+  html.dark body {
+    @apply bg-[#080b11] text-slate-100;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-200 dark:bg-slate-800/80 rounded-full hover:bg-slate-300 dark:hover:bg-slate-700;
+  }
+}
+
+/* Glassmorphism Styles - Upgraded to Premium SaaS look */
+.glass-panel {
+  @apply bg-white/70 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200/40 dark:border-slate-800/30;
+}
+
+.glass-card {
+  @apply bg-white/80 dark:bg-[#0c121e]/85 backdrop-blur-xl border border-slate-200/50 dark:border-slate-800/45 shadow-sm hover:shadow-lg hover:shadow-primary/5 dark:hover:shadow-primary/5 transition-all duration-300;
+}
+
+.glass-input {
+  @apply bg-white/40 dark:bg-slate-950/40 backdrop-blur-sm border border-slate-200 dark:border-slate-800 focus:border-primary dark:focus:border-primary/80 focus:ring-1 focus:ring-primary/30 rounded-xl outline-none transition-all;
+}
+
+/* Advanced Shadow Glows */
+.glow-primary {
+  box-shadow: 0 0 25px -5px rgba(37, 99, 235, 0.25), 0 0 15px -8px rgba(37, 99, 235, 0.2);
+}
+
+.glow-accent {
+  box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.25), 0 0 15px -8px rgba(6, 182, 212, 0.2);
+}
+
+.glow-success {
+  box-shadow: 0 0 25px -5px rgba(34, 197, 94, 0.2), 0 0 15px -8px rgba(34, 197, 94, 0.15);
+}
+
+/* Custom Scan Animation */
+@keyframes scan-line {
+  0% {
+    top: 2%;
+  }
+  50% {
+    top: 98%;
+  }
+  100% {
+    top: 2%;
+  }
+}
+
+/* Radar pulse animation for biometrics */
+@keyframes radar-pulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1.1);
+    opacity: 0;
+  }
+}
+
+.scanner-line {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #06b6d4, #2563eb, #06b6d4, transparent);
+  box-shadow: 0 0 10px #06b6d4, 0 0 4px #2563eb;
+  position: absolute;
+  left: 0;
+  right: 0;
+  animation: scan-line 3s ease-in-out infinite;
+}
+
+.radar-circle {
+  animation: radar-pulse 2s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+}
+
+/* Toast Animations */
+@keyframes enter {
+  0% { transform: scale(0.95); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes leave {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0; }
+}
+
+.animate-enter {
+  animation: enter 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-leave {
+  animation: leave 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
