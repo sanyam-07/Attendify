@@ -15,11 +15,13 @@ import Badge from "../components/Badge";
 import Button from "../components/Button";
 import Skeleton from "../components/Skeleton";
 import { studentService } from "../services/studentService";
+import { curriculumService } from "../services/curriculumService";
 import { weeklyTimetable } from "../data/dummyData";
 import ErrorBoundary from "../components/ErrorBoundary";
 
 export const SmartCurriculum = () => {
   const [curriculum, setCurriculum] = useState(null);
+  const [timetableMap, setTimetableMap] = useState({});
   const [activeTab, setActiveTab] = useState("Timetable"); // Timetable, Subjects, Assignments, Exams
   const [activeDay, setActiveDay] = useState("Monday"); // for Timetable day select
   const [loading, setLoading] = useState(true);
@@ -27,8 +29,27 @@ export const SmartCurriculum = () => {
 
   const loadData = async () => {
     try {
-      const res = await studentService.getCurriculum();
+      const [res, timetableList] = await Promise.all([
+        studentService.getCurriculum(),
+        curriculumService.getTimetable()
+      ]);
+
       setCurriculum(res);
+
+      // Group timetable entries by dayOfWeek
+      const grouped = {};
+      ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].forEach(day => {
+        grouped[day] = timetableList
+          .filter(t => t.dayOfWeek === day)
+          .map(t => ({
+            room: t.room,
+            subject: t.subject,
+            time: `${t.startTime} - ${t.endTime}`,
+            faculty: t.teacherName || "Faculty Member"
+          }));
+      });
+
+      setTimetableMap(grouped);
     } catch (err) {
       toast.error("Failed to load curriculum details.");
     } finally {
@@ -151,7 +172,7 @@ export const SmartCurriculum = () => {
 
               {/* Timetable card grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {weeklyTimetable[activeDay]?.map((slot, index) => (
+                {(timetableMap[activeDay]?.length ? timetableMap[activeDay] : weeklyTimetable[activeDay])?.map((slot, index) => (
                   <Card key={index} hoverEffect={true} className="flex flex-col justify-between p-5 min-h-[140px]">
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
@@ -164,7 +185,7 @@ export const SmartCurriculum = () => {
                     </div>
                     <div className="mt-6 pt-3 border-t border-slate-100 dark:border-slate-850 flex items-center justify-between text-[11px] font-bold text-slate-500 dark:text-slate-400">
                       <span className="flex items-center gap-1.5"><Clock size={12} /> {slot.time}</span>
-                      <span className="flex items-center gap-1"><User size={12} /> {slot.faculty.split(' ').pop()}</span>
+                      <span className="flex items-center gap-1"><User size={12} /> {slot.faculty?.split(' ').pop()}</span>
                     </div>
                   </Card>
                 ))}

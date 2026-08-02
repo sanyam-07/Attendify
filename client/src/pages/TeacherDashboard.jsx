@@ -19,6 +19,7 @@ import { teacherService } from "../services/teacherService";
 import { attendanceService } from "../services/attendanceService";
 import { subjectService } from "../services/subjectService";
 import { authService } from "../services/authService";
+import { curriculumService } from "../services/curriculumService";
 import ErrorBoundary from "../components/ErrorBoundary";
 
 export const TeacherDashboard = () => {
@@ -42,19 +43,29 @@ export const TeacherDashboard = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [profRes, classRes, studentRes, allAttRes, attHistRes, activeSessRes] = await Promise.all([
+        const [profRes, classRes, studentRes, allAttRes, attHistRes, activeSessRes, timetableList] = await Promise.all([
           authService.getMe(),
           teacherService.getClasses(),
           teacherService.getStudentsList(),
           attendanceService.getAllAttendance(),
           attendanceService.getAttendanceHistory(),
-          attendanceService.getActiveSession()
+          attendanceService.getActiveSession(),
+          curriculumService.getTimetable()
         ]);
         setTeacherProfile(profRes);
-        setClasses(classRes);
         setStudents(studentRes);
         setAttendanceRecords(allAttRes);
         setAttendanceHistory(attHistRes);
+
+        const formattedTimetable = timetableList.map((t, idx) => ({
+          id: t._id || `c-${idx}`,
+          name: t.subject,
+          room: t.room,
+          time: `${t.startTime} - ${t.endTime}`,
+          batch: `${t.department || 'CS'} - Sec ${t.section || 'A'}`
+        }));
+
+        setClasses(formattedTimetable.length ? formattedTimetable : classRes);
 
         if (activeSessRes && activeSessRes.active) {
           setActiveSessionClassId(activeSessRes.session?.classId || "SUB301");

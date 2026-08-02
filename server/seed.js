@@ -79,11 +79,11 @@ const seedData = async () => {
 
     console.log("Creating 5 Subjects...");
     const subjectsData = [
-      { name: "AI & Machine Learning", code: "CS601", teacher: teacherDocs[0].user._id },
-      { name: "Database Management Systems", code: "CS602", teacher: teacherDocs[1].user._id },
-      { name: "Web Technologies", code: "CS603", teacher: teacherDocs[2].user._id },
-      { name: "Operating Systems", code: "CS604", teacher: teacherDocs[0].user._id },
-      { name: "Computer Networks", code: "CS605", teacher: teacherDocs[1].user._id }
+      { name: "AI & Machine Learning", code: "CS601", teacher: teacherDocs[0].user._id, syllabusPercentage: 85 },
+      { name: "Database Management Systems", code: "CS602", teacher: teacherDocs[1].user._id, syllabusPercentage: 78 },
+      { name: "Web Technologies", code: "CS603", teacher: teacherDocs[2].user._id, syllabusPercentage: 92 },
+      { name: "Operating Systems", code: "CS604", teacher: teacherDocs[0].user._id, syllabusPercentage: 70 },
+      { name: "Computer Networks", code: "CS605", teacher: teacherDocs[1].user._id, syllabusPercentage: 88 }
     ];
 
     const createdSubjects = [];
@@ -94,7 +94,8 @@ const seedData = async () => {
         department: csDept._id,
         departmentName: "Computer Science",
         teacher: sub.teacher,
-        credits: 4
+        credits: 4,
+        syllabusPercentage: sub.syllabusPercentage
       });
       createdSubjects.push(createdSub);
     }
@@ -146,6 +147,47 @@ const seedData = async () => {
       isActive: true,
       qrCodeToken: `qr-token-active-${Date.now()}`
     });
+
+    console.log("Creating Timetable Schedules...");
+    const Timetable = require("./models/Timetable");
+    await Timetable.deleteMany();
+    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    const timetableData = [
+      { subject: "AI & Machine Learning", dayOfWeek: "Monday", startTime: "09:00 AM", endTime: "10:30 AM", room: "Lab-3", teacherName: "Dr. Sarah Jenkins" },
+      { subject: "Database Management Systems", dayOfWeek: "Monday", startTime: "11:00 AM", endTime: "12:30 PM", room: "Hall-101", teacherName: "Prof. David Wilson" },
+      { subject: "Web Technologies", dayOfWeek: "Tuesday", startTime: "10:00 AM", endTime: "11:30 AM", room: "Lab-1", teacherName: "Dr. Michael Brown" },
+      { subject: "Operating Systems", dayOfWeek: "Wednesday", startTime: "02:00 PM", endTime: "03:30 PM", room: "Room-204", teacherName: "Dr. Sarah Jenkins" },
+      { subject: "Computer Networks", dayOfWeek: "Thursday", startTime: "09:00 AM", endTime: "10:30 AM", room: "Hall-102", teacherName: "Prof. David Wilson" },
+      { subject: "AI & Machine Learning", dayOfWeek: "Friday", startTime: "01:00 PM", endTime: "02:30 PM", room: "Lab-3", teacherName: "Dr. Sarah Jenkins" }
+    ];
+    await Timetable.insertMany(timetableData);
+
+    console.log("Creating Assignments...");
+    const Assignment = require("./models/Assignment");
+    await Assignment.deleteMany();
+    await Assignment.insertMany([
+      { title: "Neural Network Architecture Optimization", subject: "AI & Machine Learning", teacherName: "Dr. Sarah Jenkins", dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), status: "Pending", description: "Implement backpropagation algorithm from scratch in Python." },
+      { title: "SQL Schema Normalization & Indexing", subject: "Database Management Systems", teacherName: "Prof. David Wilson", dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), status: "Pending", description: "Design 3NF database schema for e-commerce system." },
+      { title: "RESTful API Integration Project", subject: "Web Technologies", teacherName: "Dr. Michael Brown", dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), status: "Submitted", description: "Build full stack React Express application." }
+    ]);
+
+    console.log("Creating Exam Schedule...");
+    const Exam = require("./models/Exam");
+    await Exam.deleteMany();
+    await Exam.insertMany([
+      { title: "Mid-Term Evaluation: Machine Learning", subject: "AI & Machine Learning", examType: "Mid-Term", room: "Auditorium A", examDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000), duration: "2 Hours", totalMarks: 100 },
+      { title: "Lab Practical: Web Systems", subject: "Web Technologies", examType: "Lab Practical", room: "Lab-1", examDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), duration: "3 Hours", totalMarks: 50 },
+      { title: "Final Comprehensive: Database Systems", subject: "Database Management Systems", examType: "Final", room: "Auditorium B", examDate: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000), duration: "3 Hours", totalMarks: 100 }
+    ]);
+
+    console.log("Creating Notifications...");
+    const Notification = require("./models/Notification");
+    await Notification.deleteMany();
+    await Notification.insertMany([
+      { title: "Upcoming Machine Learning Quiz", message: "Mid-term quiz scheduled for next Monday in Lab-3.", receiverType: "Student", isRead: false },
+      { title: "Biometric Attendance Active", message: "Dual Face ID & Dynamic QR verification active for CS department.", receiverType: "All", isRead: false },
+      { title: "Curriculum Syllabus Updated", message: "New lab exercises uploaded for AI & Machine Learning module.", receiverType: "Student", isRead: true }
+    ]);
 
     console.log("Creating Attendance Records...");
     const rooms = ["Lab-3", "Hall-101", "Lab-1", "Room-204"];

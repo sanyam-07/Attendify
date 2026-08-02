@@ -32,6 +32,10 @@ const subjectSchema = new mongoose.Schema(
     credits: {
       type: Number,
       default: 4
+    },
+    syllabusPercentage: {
+      type: Number,
+      default: 85
     }
   },
   {
