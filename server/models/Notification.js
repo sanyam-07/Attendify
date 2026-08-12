@@ -26,9 +26,26 @@ const notificationSchema = new mongoose.Schema(
     isRead: {
       type: Boolean,
       default: false
+    },
+    type: {
+      type: String,
+      enum: ["Attendance", "Assignment", "Exam", "Timetable", "System", "Announcement"],
+      default: "System"
+    },
+    priority: {
+      type: String,
+      enum: ["Low", "Medium", "High"],
+      default: "Medium"
+    },
+    actionUrl: {
+      type: String,
+      default: ""
     }
   },
   { timestamps: true }
 );
+
+notificationSchema.index({ receiver: 1, isRead: 1, createdAt: -1 });
+notificationSchema.index({ receiverType: 1, createdAt: -1 });
 
 module.exports = mongoose.model("Notification", notificationSchema);

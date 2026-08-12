@@ -4,19 +4,29 @@ const { protect } = require("../middleware/authMiddleware");
 const { authorizeRoles } = require("../middleware/roleMiddleware");
 const {
   getNotifications,
+  getUnreadCount,
   createNotification,
   markAsRead,
-  deleteNotification
+  markAllAsRead,
+  deleteNotification,
+  getUserPreferences,
+  updateUserPreferences
 } = require("../controllers/notificationController");
 
 router.route("/")
   .get(protect, getNotifications)
   .post(protect, authorizeRoles("teacher", "admin"), createNotification);
 
-router.route("/:id/read")
-  .put(protect, markAsRead);
+router.get("/unread-count", protect, getUnreadCount);
 
-router.route("/:id")
-  .delete(protect, authorizeRoles("admin"), deleteNotification);
+router.put("/read-all", protect, markAllAsRead);
+
+router.route("/preferences")
+  .get(protect, getUserPreferences)
+  .put(protect, updateUserPreferences);
+
+router.put("/:id/read", protect, markAsRead);
+
+router.delete("/:id", protect, deleteNotification);
 
 module.exports = router;

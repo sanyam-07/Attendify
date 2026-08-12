@@ -55,18 +55,21 @@ export const Layout = ({ children }) => {
     if (currentUser.role === "teacher") {
       return [
         { path: "/teacher", label: "Dashboard", icon: LayoutDashboard },
+        { path: "/notifications", label: "Notifications", icon: Bell },
         { path: "/analytics", label: "Class Analytics", icon: BarChart3 },
         { path: "/settings", label: "Settings", icon: Settings }
       ];
     } else if (currentUser.role === "admin") {
       return [
         { path: "/admin", label: "Dashboard", icon: LayoutDashboard },
+        { path: "/notifications", label: "Notifications", icon: Bell },
         { path: "/settings", label: "Settings", icon: Settings }
       ];
     } else {
       return [
         { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
         { path: "/attendance", label: "Attendance Scanner", icon: UserCheck, highlight: true },
+        { path: "/notifications", label: "Notifications", icon: Bell },
         { path: "/curriculum", label: "Smart Curriculum", icon: BookOpen },
         { path: "/progress", label: "Progress Compliance", icon: TrendingUp },
         { path: "/analytics", label: "Analytics Reports", icon: BarChart3 },
@@ -258,31 +261,47 @@ export const Layout = ({ children }) => {
                         {notifications.length === 0 ? (
                           <p className="text-xs text-slate-400 text-center py-6">No notifications</p>
                         ) : (
-                          notifications.map((notif) => (
-                            <div
-                              key={notif.id}
-                              onClick={() => {
-                                setNotifTrayOpen(false);
-                                if (notif.link) navigate(notif.link);
-                              }}
-                              className={`p-3 rounded-xl border transition cursor-pointer text-left ${
-                                notif.read
-                                  ? "border-transparent bg-transparent hover:bg-slate-50 dark:hover:bg-slate-900/30"
-                                  : "border-blue-500/10 bg-blue-500/5 hover:bg-blue-500/10 dark:border-blue-500/15 dark:bg-blue-500/10"
-                              }`}
-                            >
-                              <div className="flex justify-between items-start gap-2">
-                                <p className={`text-xs font-bold ${notif.read ? "text-slate-800 dark:text-slate-200" : "text-blue-500"}`}>
-                                  {notif.title}
+                          notifications.slice(0, 5).map((notif) => {
+                            const isRead = notif.isRead ?? notif.read;
+                            return (
+                              <div
+                                key={notif._id || notif.id}
+                                onClick={() => {
+                                  setNotifTrayOpen(false);
+                                  navigate(notif.actionUrl || notif.link || "/notifications");
+                                }}
+                                className={`p-3 rounded-xl border transition cursor-pointer text-left ${
+                                  isRead
+                                    ? "border-transparent bg-transparent hover:bg-slate-50 dark:hover:bg-slate-900/30"
+                                    : "border-blue-500/10 bg-blue-500/5 hover:bg-blue-500/10 dark:border-blue-500/15 dark:bg-blue-500/10"
+                                }`}
+                              >
+                                <div className="flex justify-between items-start gap-2">
+                                  <p className={`text-xs font-bold ${isRead ? "text-slate-800 dark:text-slate-200" : "text-blue-500"}`}>
+                                    {notif.title}
+                                  </p>
+                                  <span className="text-[9px] text-slate-400 flex-shrink-0 font-medium">
+                                    {notif.createdAt ? new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : notif.time || "Now"}
+                                  </span>
+                                </div>
+                                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                                  {notif.message}
                                 </p>
-                                <span className="text-[9px] text-slate-400 flex-shrink-0 font-medium">{notif.time}</span>
                               </div>
-                              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                                {notif.message}
-                              </p>
-                            </div>
-                          ))
+                            );
+                          })
                         )}
+                      </div>
+                      <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800 text-center">
+                        <button
+                          onClick={() => {
+                            setNotifTrayOpen(false);
+                            navigate("/notifications");
+                          }}
+                          className="text-xs font-extrabold text-primary hover:underline"
+                        >
+                          View All Notifications →
+                        </button>
                       </div>
                     </motion.div>
                   </>

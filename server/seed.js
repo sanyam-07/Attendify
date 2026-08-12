@@ -184,9 +184,14 @@ const seedData = async () => {
     const Notification = require("./models/Notification");
     await Notification.deleteMany();
     await Notification.insertMany([
-      { title: "Upcoming Machine Learning Quiz", message: "Mid-term quiz scheduled for next Monday in Lab-3.", receiverType: "Student", isRead: false },
-      { title: "Biometric Attendance Active", message: "Dual Face ID & Dynamic QR verification active for CS department.", receiverType: "All", isRead: false },
-      { title: "Curriculum Syllabus Updated", message: "New lab exercises uploaded for AI & Machine Learning module.", receiverType: "Student", isRead: true }
+      { title: "Attendance Session Active", message: "Dr. Sarah Jenkins started AI & Machine Learning check-in in Lab-3.", receiverType: "Student", type: "Attendance", priority: "High", actionUrl: "#/attendance", isRead: false },
+      { title: "Assignment Deadline Approaching", message: "Neural Network Architecture Optimization is due in 3 days.", receiverType: "Student", type: "Assignment", priority: "Medium", actionUrl: "#/curriculum", isRead: false },
+      { title: "Mid-Term Evaluation Scheduled", message: "Machine Learning Mid-Term exam scheduled in Auditorium A.", receiverType: "Student", type: "Exam", priority: "High", actionUrl: "#/curriculum", isRead: false },
+      { title: "Timetable Room Update", message: "Web Technologies lecture moved from Lab-1 to Room-204.", receiverType: "Student", type: "Timetable", priority: "Low", actionUrl: "#/curriculum", isRead: true },
+      { title: "Low Attendance Alert", message: "Attention: 3 students in Database Management Systems have attendance below 75%.", receiverType: "Teacher", type: "Attendance", priority: "High", actionUrl: "#/analytics", isRead: false },
+      { title: "Assignment Submissions Received", message: "18 students submitted Neural Network Architecture assignment.", receiverType: "Teacher", type: "Assignment", priority: "Medium", isRead: true },
+      { title: "Biometric AI System Active", message: "Dual Face ID & Dynamic QR verification system operating at 99.8% precision.", receiverType: "All", type: "System", priority: "Medium", isRead: false },
+      { title: "System Maintenance Notice", message: "Scheduled database backup will take place on Sunday at 02:00 AM.", receiverType: "All", type: "Announcement", priority: "Low", isRead: false }
     ]);
 
     console.log("Creating Attendance Records...");

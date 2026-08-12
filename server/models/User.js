@@ -36,6 +36,13 @@ const userSchema = new mongoose.Schema(
     phone: {
       type: String,
       default: "+1 (555) 019-2834"
+    },
+    notificationPreferences: {
+      attendance: { type: Boolean, default: true },
+      assignment: { type: Boolean, default: true },
+      exam: { type: Boolean, default: true },
+      timetable: { type: Boolean, default: true },
+      system: { type: Boolean, default: true }
     }
   },
   {

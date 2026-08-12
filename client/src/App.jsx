@@ -27,6 +27,7 @@ import ProfilePage from "./pages/ProfilePage";
 import TeacherDashboard from "./pages/TeacherDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import SettingsPage from "./pages/SettingsPage";
+import NotificationsPage from "./pages/NotificationsPage";
 
 export const App = () => {
   return (
@@ -61,6 +62,7 @@ export const App = () => {
 
               {/* 5. SHARED PROTECTED ROUTES */}
               <Route element={<ProtectedRoute allowedRoles={["student", "teacher", "admin"]} />}>
+                <Route path="/notifications" element={<Layout><NotificationsPage /></Layout>} />
                 <Route path="/analytics" element={<Layout><AnalyticsPage /></Layout>} />
                 <Route path="/settings" element={<Layout><SettingsPage /></Layout>} />
               </Route>
