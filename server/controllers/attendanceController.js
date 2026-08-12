@@ -79,10 +79,13 @@ const createSession = asyncHandler(async (req, res) => {
  * @access  Private (Teacher, Admin)
  */
 const endSession = asyncHandler(async (req, res) => {
-  const teacherId = req.user._id;
+  let query = { isActive: true };
+  if (req.user.role !== "admin") {
+    query.teacher = req.user._id;
+  }
 
   await AttendanceSession.updateMany(
-    { teacher: teacherId, isActive: true },
+    query,
     { isActive: false, endTime: Date.now() }
   );
 

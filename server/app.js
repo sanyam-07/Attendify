@@ -16,6 +16,8 @@ const assignmentRoutes = require("./routes/assignmentRoutes");
 const examRoutes = require("./routes/examRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
+const adminRoutes = require("./routes/adminRoutes");
+const departmentRoutes = require("./routes/departmentRoutes");
 
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
@@ -39,6 +41,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/teachers", teacherRoutes);
 app.use("/api/subjects", subjectRoutes);
+app.use("/api/departments", departmentRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/face", faceRoutes);
 app.use("/api/timetable", timetableRoutes);
@@ -46,6 +49,7 @@ app.use("/api/assignments", assignmentRoutes);
 app.use("/api/exams", examRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/analytics", analyticsRoutes);
+app.use("/api/admin", adminRoutes);
 
 // Root health check endpoint
 app.get("/", (req, res) => {

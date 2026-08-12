@@ -25,7 +25,7 @@ const getSubjects = asyncHandler(async (req, res) => {
  * @access  Private (Admin, Teacher)
  */
 const createSubject = asyncHandler(async (req, res) => {
-  const { name, code, departmentName, credits } = req.body;
+  const { name, code, departmentName, credits, syllabusPercentage } = req.body;
 
   if (!name || !code) {
     res.status(400);
@@ -43,7 +43,8 @@ const createSubject = asyncHandler(async (req, res) => {
     code,
     departmentName: departmentName || "Computer Science",
     teacher: req.user._id,
-    credits: credits || 4
+    credits: credits || 4,
+    syllabusPercentage: syllabusPercentage || 85
   });
 
   res.status(201).json({
@@ -53,7 +54,60 @@ const createSubject = asyncHandler(async (req, res) => {
   });
 });
 
+/**
+ * @desc    Update subject
+ * @route   PUT /api/subjects/:id
+ * @access  Private (Admin, Teacher)
+ */
+const updateSubject = asyncHandler(async (req, res) => {
+  const subject = await Subject.findById(req.params.id);
+
+  if (!subject) {
+    res.status(404);
+    throw new Error("Subject not found");
+  }
+
+  const { name, code, departmentName, syllabusPercentage, teacher, credits } = req.body;
+  if (name) subject.name = name;
+  if (code) subject.code = code;
+  if (departmentName) subject.departmentName = departmentName;
+  if (syllabusPercentage !== undefined) subject.syllabusPercentage = syllabusPercentage;
+  if (teacher) subject.teacher = teacher;
+  if (credits) subject.credits = credits;
+
+  await subject.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Subject updated successfully",
+    subject
+  });
+});
+
+/**
+ * @desc    Delete subject
+ * @route   DELETE /api/subjects/:id
+ * @access  Private (Admin)
+ */
+const deleteSubject = asyncHandler(async (req, res) => {
+  const subject = await Subject.findById(req.params.id);
+
+  if (!subject) {
+    res.status(404);
+    throw new Error("Subject not found");
+  }
+
+  await subject.deleteOne();
+
+  res.status(200).json({
+    success: true,
+    message: "Subject deleted successfully"
+  });
+});
+
 module.exports = {
   getSubjects,
-  createSubject
+  createSubject,
+  updateSubject,
+  deleteSubject
 };
