@@ -16,13 +16,16 @@
     "face-api.js": "^0.22.2",
     "framer-motion": "^12.42.2",
     "html5-qrcode": "^2.3.8",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.8",
     "lucide-react": "^1.25.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-hook-form": "^7.82.0",
     "react-hot-toast": "^2.6.0",
     "react-router-dom": "^7.18.1",
-    "recharts": "^3.9.2"
+    "recharts": "^3.9.2",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",

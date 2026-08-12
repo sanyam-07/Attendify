@@ -15,6 +15,7 @@ const timetableRoutes = require("./routes/timetableRoutes");
 const assignmentRoutes = require("./routes/assignmentRoutes");
 const examRoutes = require("./routes/examRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const analyticsRoutes = require("./routes/analyticsRoutes");
 
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
@@ -44,6 +45,7 @@ app.use("/api/timetable", timetableRoutes);
 app.use("/api/assignments", assignmentRoutes);
 app.use("/api/exams", examRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 // Root health check endpoint
 app.get("/", (req, res) => {
