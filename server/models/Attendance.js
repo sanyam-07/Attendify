@@ -49,4 +49,9 @@ const attendanceSchema = new mongoose.Schema(
   }
 );
 
+// Performance Indexes for high-frequency queries & aggregation
+attendanceSchema.index({ student: 1, verifiedAt: -1 });
+attendanceSchema.index({ method: 1, status: 1 });
+attendanceSchema.index({ session: 1 });
+
 module.exports = mongoose.model("Attendance", attendanceSchema);

@@ -33,7 +33,7 @@ const getStudentAnalytics = asyncHandler(async (req, res) => {
     $or: [{ student: userId }, { studentName: userName }]
   };
 
-  const records = await Attendance.find(studentQuery).sort({ verifiedAt: -1 });
+  const records = await Attendance.find(studentQuery).sort({ verifiedAt: -1 }).lean();
 
   const totalClasses = records.length;
   let presentCount = 0;
@@ -121,7 +121,7 @@ const getStudentAnalytics = asyncHandler(async (req, res) => {
   const currentMonthIdx = new Date().getMonth();
   const recentMonths = months.slice(Math.max(0, currentMonthIdx - 5), currentMonthIdx + 1);
 
-  const monthlyTrend = recentMonths.map((month, idx) => {
+  const monthlyTrend = recentMonths.map((month) => {
     const mIdx = months.indexOf(month);
     const mRecords = records.filter(r => new Date(r.verifiedAt).getMonth() === mIdx);
     const pres = mRecords.filter(r => r.status === "Present").length;
@@ -173,15 +173,17 @@ const getStudentAnalytics = asyncHandler(async (req, res) => {
  * @access  Private (Teacher, Admin)
  */
 const getTeacherAnalytics = asyncHandler(async (req, res) => {
-  const allRecords = await Attendance.find().sort({ verifiedAt: -1 });
-  const totalStudents = await Student.countDocuments();
+  const [allRecords, totalStudents] = await Promise.all([
+    Attendance.find().sort({ verifiedAt: -1 }).lean(),
+    Student.countDocuments()
+  ]);
 
   const todayStr = new Date().toISOString().split("T")[0];
   const todayRecords = allRecords.filter(
     r => new Date(r.verifiedAt).toISOString().split("T")[0] === todayStr
   );
 
-  // Distinct student counts for today (preventing present > classStrength)
+  // Distinct student counts for today
   const uniquePresentNames = new Set(
     todayRecords.filter(r => r.status === "Present").map(r => r.studentName || r.student?.toString())
   );
@@ -278,7 +280,7 @@ const getAdminAnalytics = asyncHandler(async (req, res) => {
     Student.countDocuments(),
     Teacher.countDocuments(),
     AttendanceSession.countDocuments({ isActive: true }),
-    Attendance.find()
+    Attendance.find().lean()
   ]);
 
   const totalCheckins = allRecords.length;
