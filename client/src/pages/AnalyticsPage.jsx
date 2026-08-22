@@ -29,7 +29,10 @@ import {
   CheckCircle,
   Clock,
   AlertTriangle,
-  Award
+  Award,
+  ShieldCheck,
+  Zap,
+  Target
 } from "lucide-react";
 import toast from "react-hot-toast";
 import Card from "../components/Card";
@@ -44,7 +47,7 @@ const COLORS = ["#22C55E", "#EF4444", "#F59E0B", "#3B82F6", "#8B5CF6"];
 export const AnalyticsPage = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("Semester"); // Today, Last 7 Days, Last 30 Days, Semester
+  const [filter, setFilter] = useState("Semester");
   const [exporting, setExporting] = useState(false);
 
   const loadAnalytics = async () => {
@@ -60,8 +63,6 @@ export const AnalyticsPage = () => {
 
   useEffect(() => {
     loadAnalytics();
-
-    // Realtime auto-refresh every 30 seconds
     const interval = setInterval(loadAnalytics, 30000);
     return () => clearInterval(interval);
   }, []);
@@ -134,13 +135,10 @@ export const AnalyticsPage = () => {
 
   if (loading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 text-left">
         <Skeleton variant="title" />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <Skeleton variant="card" count={3} />
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Skeleton variant="chart" count={2} />
         </div>
       </div>
     );
@@ -182,32 +180,14 @@ export const AnalyticsPage = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200/50 dark:border-slate-850 pb-5">
           <div>
             <h2 className="text-xl sm:text-2xl font-black font-sans text-slate-900 dark:text-white flex items-center gap-2.5">
-              <BarChart3 className="text-primary" /> AI Analytics & Reports Console
+              <BarChart3 className="text-primary" /> AI Analytics & Intelligence Console
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 font-medium leading-relaxed">
-              Real-time MongoDB aggregated metrics, attendance forecasting models, and PDF/Excel reporting.
+              Real-time MongoDB aggregated metrics, AI risk scores, forecast models, and personalized academic guidance.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            {/* Filter Buttons */}
-            <div className="flex bg-slate-100 dark:bg-slate-950 border border-slate-200/50 dark:border-slate-850 p-1 rounded-xl">
-              {["Today", "Last 7 Days", "Last 30 Days", "Semester"].map((f) => (
-                <button
-                  key={f}
-                  onClick={() => setFilter(f)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-all ${
-                    filter === f
-                      ? "bg-white dark:bg-slate-800 text-primary dark:text-white shadow-sm"
-                      : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-300"
-                  }`}
-                >
-                  {f}
-                </button>
-              ))}
-            </div>
-
-            {/* Export Buttons */}
             <Button
               onClick={handleExportPDF}
               variant="outline"
@@ -229,41 +209,75 @@ export const AnalyticsPage = () => {
           </div>
         </div>
 
-        {/* ATTENDANCE PREDICTOR BANNER */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="p-6 rounded-3xl bg-gradient-to-r from-indigo-900/15 via-purple-900/15 to-transparent border border-indigo-500/30 dark:border-indigo-500/20 backdrop-blur-sm relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4"
-        >
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2">
-              <Sparkles size={16} className="text-indigo-400 animate-spin-slow" />
-              <span className="text-[10px] uppercase font-bold tracking-widest text-indigo-400">AI Attendance Predictor</span>
+        {/* AI RISK ENGINE & FORECAST BANNER */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          {/* RISK SCORE TILE */}
+          <Card hoverEffect={false} className="lg:col-span-4 p-6 space-y-4 flex flex-col justify-between border-primary/30">
+            <div className="space-y-1">
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-primary flex items-center gap-1">
+                <Sparkles size={12} /> AI Risk Assessment Engine
+              </span>
+              <div className="flex items-baseline justify-between pt-2">
+                <h3 className="text-3xl font-black text-slate-900 dark:text-white">{data?.riskScore || 88}<span className="text-sm font-bold text-slate-400">/100</span></h3>
+                <Badge variant={data?.riskLevel === "Safe" ? "success" : data?.riskLevel === "Warning" ? "warning" : "danger"}>
+                  {data?.riskLevel || "Safe"}
+                </Badge>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed pt-1">
+                {data?.explanation || "Excellent attendance record. You are safely compliant."}
+              </p>
             </div>
-            <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
-              {data?.predictorMessage || "Attendance is safely above university requirement."}
-            </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-              Overall Rate: <strong className="text-primary font-bold">{data?.overallAttendance}%</strong> • Present: {data?.presentCount} • Absent: {data?.absentCount} • Late: {data?.lateCount}
-            </p>
-          </div>
 
-          <div className="flex items-center gap-3">
-            <div className="p-3 bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800 rounded-2xl text-center min-w-[100px]">
-              <p className="text-[9px] uppercase font-bold text-slate-400">Target 75%</p>
-              <p className="text-sm font-black text-emerald-500">{data?.requiredClassesToReach75 > 0 ? `${data.requiredClassesToReach75} Classes` : "Compliant"}</p>
+            <div className="pt-3 border-t border-slate-100 dark:border-slate-850 space-y-2">
+              <span className="text-[10px] font-bold uppercase text-slate-400">Personalized AI Recommendation</span>
+              {data?.recommendations?.map((rec, idx) => (
+                <p key={idx} className="text-xs font-semibold text-primary flex items-center gap-1.5">
+                  <Zap size={14} className="flex-shrink-0" /> {rec}
+                </p>
+              ))}
             </div>
-            <div className="p-3 bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800 rounded-2xl text-center min-w-[100px]">
-              <p className="text-[9px] uppercase font-bold text-slate-400">Target 90%</p>
-              <p className="text-sm font-black text-indigo-400">{data?.requiredClassesToReach90 > 0 ? `${data.requiredClassesToReach90} Classes` : "Achieved"}</p>
+          </Card>
+
+          {/* ATTENDANCE FORECAST MODEL */}
+          <Card hoverEffect={false} className="lg:col-span-8 p-6 space-y-4 flex flex-col justify-between">
+            <div className="space-y-1">
+              <h4 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+                <Target size={16} className="text-indigo-400" /> Attendance Forecast Model
+              </h4>
+              <p className="text-[11px] text-slate-400">Dynamic projection based on upcoming class participation scenarios.</p>
             </div>
-          </div>
-        </motion.div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="p-4 bg-slate-50 dark:bg-slate-950/60 rounded-2xl border border-slate-200/50 dark:border-slate-850 space-y-2">
+                <p className="text-xs font-extrabold text-slate-900 dark:text-white">Next 5 Classes Projection</p>
+                <div className="flex justify-between text-xs font-semibold">
+                  <span className="text-emerald-500 font-bold">Best Case: {data?.attendanceForecast?.next5?.bestCase}%</span>
+                  <span className="text-red-500 font-bold">Worst Case: {data?.attendanceForecast?.next5?.worstCase}%</span>
+                </div>
+              </div>
+
+              <div className="p-4 bg-slate-50 dark:bg-slate-950/60 rounded-2xl border border-slate-200/50 dark:border-slate-850 space-y-2">
+                <p className="text-xs font-extrabold text-slate-900 dark:text-white">Next 10 Classes Projection</p>
+                <div className="flex justify-between text-xs font-semibold">
+                  <span className="text-emerald-500 font-bold">Best Case: {data?.attendanceForecast?.next10?.bestCase}%</span>
+                  <span className="text-red-500 font-bold">Worst Case: {data?.attendanceForecast?.next10?.worstCase}%</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between text-xs font-bold text-slate-500 pt-2 border-t border-slate-100 dark:border-slate-850">
+              <span>Required for 75%: {data?.requiredClassesToReach75 || 0} classes</span>
+              <span>Safe Misses: {data?.safeMisses || 0} lectures</span>
+            </div>
+          </Card>
+
+        </div>
 
         {/* CHARTS GRID ROW 1 */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* DONUT / PIE CHART: PRESENT VS ABSENT VS LATE */}
+          {/* PIE CHART */}
           <Card hoverEffect={false} className="lg:col-span-4 p-6 space-y-4 flex flex-col justify-between">
             <div className="space-y-1">
               <h4 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
@@ -308,7 +322,7 @@ export const AnalyticsPage = () => {
           <Card hoverEffect={false} className="lg:col-span-8 p-6 space-y-4">
             <div className="space-y-1">
               <h4 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
-                <BarChart3 size={16} className="text-primary" /> Subject-wise Attendance Breakdown
+                <BarChart3 size={16} className="text-primary" /> Subject Risk & Attendance Ranking
               </h4>
               <p className="text-[11px] text-slate-400">Comparing attendance performance across course subjects.</p>
             </div>
@@ -322,59 +336,6 @@ export const AnalyticsPage = () => {
                   <Legend wrapperStyle={{ fontSize: "10px", fontWeight: "bold", paddingTop: "8px" }} />
                   <Bar dataKey="percentage" name="Attendance %" fill="#2563EB" radius={[6, 6, 0, 0]} />
                 </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </Card>
-
-        </div>
-
-        {/* CHARTS GRID ROW 2 */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
-          {/* MONTHLY AREA CHART */}
-          <Card hoverEffect={false} className="lg:col-span-6 p-6 space-y-4">
-            <div className="space-y-1">
-              <h4 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
-                <TrendingUp size={16} className="text-indigo-400" /> Monthly Attendance Growth Trend
-              </h4>
-              <p className="text-[11px] text-slate-400">Historical trend mapping check-in consistency over months.</p>
-            </div>
-            <div className="h-64 w-full text-xs font-semibold">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={data?.monthlyTrend} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="monthlyGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#6366F1" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#6366F1" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#94a3b8" opacity={0.08} vertical={false} />
-                  <XAxis dataKey="month" stroke="#94a3b8" tickLine={false} axisLine={false} tickMargin={8} />
-                  <YAxis domain={[50, 100]} stroke="#94a3b8" tickLine={false} axisLine={false} tickMargin={8} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Area type="monotone" dataKey="percentage" name="Attendance %" stroke="#6366F1" strokeWidth={2.5} fillOpacity={1} fill="url(#monthlyGrad)" />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </Card>
-
-          {/* WEEKLY LINE CHART */}
-          <Card hoverEffect={false} className="lg:col-span-6 p-6 space-y-4">
-            <div className="space-y-1">
-              <h4 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
-                <Calendar size={16} className="text-cyan-400" /> Day-of-Week Attendance Distribution
-              </h4>
-              <p className="text-[11px] text-slate-400">Daily check-in percentages across weekdays.</p>
-            </div>
-            <div className="h-64 w-full text-xs font-semibold">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={data?.weeklyTrend} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#94a3b8" opacity={0.08} vertical={false} />
-                  <XAxis dataKey="day" stroke="#94a3b8" tickLine={false} axisLine={false} tickMargin={8} />
-                  <YAxis domain={[50, 100]} stroke="#94a3b8" tickLine={false} axisLine={false} tickMargin={8} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Line type="monotone" dataKey="percentage" name="Daily Rate %" stroke="#06B6D4" strokeWidth={2.5} dot={{ r: 4 }} />
-                </LineChart>
               </ResponsiveContainer>
             </div>
           </Card>
