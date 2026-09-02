@@ -1,5 +1,5 @@
 import Human from "@vladmandic/human";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   User,
@@ -54,17 +54,44 @@ export const ProfilePage = () => {
     toast.success("Profile details updated successfully!");
   };
 
-  const videoRef = React.useRef(null);
-  const canvasRef = React.useRef(null);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const streamRef = useRef(null);
   const [stream, setStream] = useState(null);
   const [cameraError, setCameraError] = useState(null);
-  const humanRef = React.useRef(null);
+  const humanRef = useRef(null);
   const [modelsLoaded, setModelsLoaded] = useState(false);
+
   const stopWebcam = () => {
-    if (stream) {
-      stream.getTracks().forEach((track) => track.stop());
-      setStream(null);
+    // 1. Stop all tracks via streamRef
+    if (streamRef.current) {
+      try {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+      } catch (e) {
+        console.warn("Error stopping streamRef tracks:", e);
+      }
+      streamRef.current = null;
     }
+
+    // 2. Stop all tracks via React state stream
+    if (stream) {
+      try {
+        stream.getTracks().forEach((track) => track.stop());
+      } catch (e) {
+        console.warn("Error stopping stream state tracks:", e);
+      }
+    }
+
+    // 3. Pause video element and detach srcObject
+    if (videoRef.current) {
+      try {
+        videoRef.current.pause();
+      } catch (e) {}
+      videoRef.current.srcObject = null;
+    }
+
+    // 4. Reset stream state
+    setStream(null);
   };
 
   const startWebcam = async () => {
@@ -88,6 +115,7 @@ export const ProfilePage = () => {
         });
       }
 
+      streamRef.current = mediaStream;
       setStream(mediaStream);
 
       if (videoRef.current) {
@@ -109,17 +137,18 @@ export const ProfilePage = () => {
       console.error(err);
       setCameraError("Camera access denied.");
       toast.error("Could not access camera.");
+      stopWebcam();
       throw err;
     }
   };
 
   // Guarantee MediaStream is bound to video element once mounted & play is invoked
   useEffect(() => {
-    if (stream && videoRef.current) {
+    if (stream && videoRef.current && bioState !== "completed") {
       videoRef.current.srcObject = stream;
       videoRef.current.play().catch((err) => console.error("Profile video play error:", err));
     }
-  }, [stream]);
+  }, [stream, bioState]);
 
   useEffect(() => {
     return () => {
@@ -140,7 +169,9 @@ export const ProfilePage = () => {
 
             detector: {
               enabled: true,
-              rotation: true
+              rotation: true,
+              maxDetected: 5,
+              minConfidence: 0.20
             },
 
             description: {
@@ -148,7 +179,7 @@ export const ProfilePage = () => {
             },
 
             mesh: {
-              enabled: false
+              enabled: true
             },
 
             iris: {
@@ -247,123 +278,149 @@ export const ProfilePage = () => {
       setBioState("idle");
     }
   };
-const triggerCapture = () => {
-  console.log("Trigger Capture Called");
 
-  setBioState("capturing");
-  setIsFlashActive(true);
+  const triggerCapture = () => {
+    console.log("Trigger Capture Called");
 
-  try {
-    if (!videoRef.current || !canvasRef.current) {
-      toast.error("Camera is not ready.");
-      setBioState("idle");
-      return;
-    }
+    setBioState("capturing");
+    setIsFlashActive(true);
 
-    const video = videoRef.current;
-
-    if (video.videoWidth === 0 || video.videoHeight === 0) {
-      toast.error("Camera stream is not ready.");
-      setBioState("idle");
-      return;
-    }
-
-    const canvas = canvasRef.current;
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    console.log("Image Captured Successfully");
-
-    setTimeout(async () => {
-      try {
-        setIsFlashActive(false);
-        setBioState("saving");
-
-        // ---------------- AI DETECTION ----------------
-
-        if (!modelsLoaded || !humanRef.current) {
-          toast.error("AI Models are still loading...");
-          setBioState("idle");
-          stopWebcam();
-          return;
-        }
-
-        const result = await humanRef.current.detect(video);
-
-        console.log("Human Result:", result);
-
-        if (!result.face || result.face.length === 0) {
-          toast.error("No face detected.");
-          setBioState("idle");
-          stopWebcam();
-          return;
-        }
-
-        const face = result.face[0];
-
-        console.log("Detected Face:", face);
-
-        const embedding =
-          face.embedding ||
-          face.descriptor ||
-          face.tensor ||
-          face.vector ||
-          null;
-
-        if (!embedding) {
-          toast.error("Embedding not generated.");
-          setBioState("idle");
-          stopWebcam();
-          return;
-        }
-
-        console.log("Embedding Length:", embedding.length);
-
-        // ---------------- SEND TO BACKEND ----------------
-
-        const res = await studentService.registerFace({
-          embedding: Array.from(embedding),
-        });
-
-        console.log("Register API Response:", res);
-
-        if (res.success) {
-          toast.success("Face Registered Successfully!");
-
-          setBioState("completed");
-
-          await loadProfile();
-        } else {
-          toast.error(res.message || "Registration failed.");
-          setBioState("idle");
-        }
-      } catch (err) {
-        console.error(err);
-
-        toast.error(
-          err?.response?.data?.message ||
-            err?.message ||
-            "Face Registration Failed"
-        );
-
-        setBioState("idle");
-      } finally {
+    try {
+      if (!videoRef.current || !canvasRef.current) {
+        toast.error("Camera is not ready.");
         stopWebcam();
+        setBioState("idle");
+        return;
       }
-    }, 500);
-  } catch (err) {
-    console.error(err);
 
-    toast.error("Capture failed");
+      const video = videoRef.current;
 
-    setBioState("idle");
+      if (video.videoWidth === 0 || video.videoHeight === 0) {
+        toast.error("Camera stream is not ready.");
+        stopWebcam();
+        setBioState("idle");
+        return;
+      }
 
-    stopWebcam();
-  }
-};
+      const canvas = canvasRef.current;
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      console.log("Image Captured Successfully");
+
+      setTimeout(async () => {
+        try {
+          setIsFlashActive(false);
+          setBioState("saving");
+
+          // ---------------- AI DETECTION ----------------
+
+          if (!modelsLoaded || !humanRef.current) {
+            toast.error("AI Models are still loading...");
+            stopWebcam();
+            setBioState("idle");
+            return;
+          }
+
+          const result = await humanRef.current.detect(video);
+
+          console.log("Human Result:", result);
+
+          if (!result.face || result.face.length === 0) {
+            toast.error("No face detected in camera frame.");
+            stopWebcam();
+            setBioState("idle");
+            return;
+          }
+
+          if (result.face.length > 1) {
+            toast.error("Multiple faces detected in frame. Please ensure only one face is visible.");
+            stopWebcam();
+            setBioState("idle");
+            return;
+          }
+
+          const face = result.face[0];
+          const faceScore = face.score || face.boxScore || 0;
+          const faceBox = face.box || [0, 0, 0, 0];
+
+          if (faceScore < 0.25) {
+            toast.error(`Face detection confidence too low (${(faceScore * 100).toFixed(1)}%). Ensure good lighting.`);
+            stopWebcam();
+            setBioState("idle");
+            return;
+          }
+
+          if ((faceBox[2] || 0) < 80 || (faceBox[3] || 0) < 80) {
+            toast.error("Face is too far from camera. Move closer to register.");
+            stopWebcam();
+            setBioState("idle");
+            return;
+          }
+
+          console.log("Detected Face:", face);
+
+          const embedding =
+            face.embedding ||
+            face.descriptor ||
+            face.tensor ||
+            face.vector ||
+            null;
+
+          if (!embedding) {
+            toast.error("Embedding not generated.");
+            stopWebcam();
+            setBioState("idle");
+            return;
+          }
+
+          console.log("Embedding Length:", embedding.length);
+
+          // ---------------- SEND TO BACKEND ----------------
+
+          const res = await studentService.registerFace({
+            embedding: Array.from(embedding),
+          });
+
+          console.log("Register API Response:", res);
+
+          if (res.success) {
+            toast.success("Face Registered Successfully!");
+            stopWebcam();
+            setBioState("completed");
+            await loadProfile();
+          } else {
+            toast.error(res.message || "Registration failed.");
+            stopWebcam();
+            setBioState("idle");
+          }
+        } catch (err) {
+          console.error(err);
+
+          toast.error(
+            err?.response?.data?.message ||
+              err?.message ||
+              "Face Registration Failed"
+          );
+
+          stopWebcam();
+          setBioState("idle");
+        } finally {
+          stopWebcam();
+        }
+      }, 500);
+    } catch (err) {
+      console.error(err);
+
+      toast.error("Capture failed");
+
+      stopWebcam();
+      setBioState("idle");
+    }
+  };
 
   if (loading) {
     return (
@@ -511,7 +568,7 @@ const triggerCapture = () => {
 
               {/* WEBCAM SCAN FEED */}
               <div className="h-56 w-full rounded-2xl bg-slate-950 border border-slate-850 relative overflow-hidden flex items-center justify-center shadow-inner">
-                {stream ? (
+                {stream && bioState !== "completed" ? (
                   <>
                     <video
                       ref={videoRef}
@@ -524,7 +581,10 @@ const triggerCapture = () => {
                     <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] opacity-20 pointer-events-none" />
                   </>
                 ) : (
-                  <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] opacity-20 pointer-events-none" />
+                  <>
+                    <canvas ref={canvasRef} className="hidden" />
+                    <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:12px_12px] opacity-20 pointer-events-none" />
+                  </>
                 )}
 
                 <AnimatePresence mode="wait">

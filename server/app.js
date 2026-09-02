@@ -23,13 +23,40 @@ const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
 const app = express();
 
-// Enable CORS for frontend client
-app.use(
-  cors({
-    origin: ["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:3000"],
-    credentials: true
-  })
-);
+// Allowed origins for development and production environments
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://127.0.0.1:5173",
+  "http://127.0.0.1:5174",
+  "http://localhost:3000",
+  process.env.CLIENT_URL,
+  process.env.CORS_ORIGIN
+].filter(Boolean);
+
+const isDevelopment = process.env.NODE_ENV !== "production";
+const devOriginRegex = /^http:\/\/(localhost|127\.0\.0\.1):(517[3-9]|518[0-9]|3000)$/;
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g., Postman, curl, server-to-server)
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    if (allowedOrigins.includes(origin) || (isDevelopment && devOriginRegex.test(origin))) {
+      return callback(null, true);
+    }
+
+    callback(new Error(`CORS policy rejection: Origin ${origin} not allowed.`));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"]
+};
+
+// Enable CORS middleware before API routes
+app.use(cors(corsOptions));
 
 // Body parsers & Cookie parser
 app.use(express.json());

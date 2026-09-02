@@ -147,17 +147,25 @@ export const attendanceService = {
   /**
    * Verify face biometrics embedding via POST /api/face/verify
    */
-  verifyFace: async (imageDataOrEmbedding, classId, subject, room, forceFail) => {
+  verifyFace: async (dataOrEmbedding, classId, subject, room, forceFail) => {
     try {
-      const isImage = typeof imageDataOrEmbedding === "string" && imageDataOrEmbedding.startsWith("data:image");
-      const payload = {
-        image: isImage ? imageDataOrEmbedding : undefined,
-        embedding: isImage ? undefined : imageDataOrEmbedding,
-        classId,
-        subject,
-        room,
-        forceFail
-      };
+      let payload = {};
+
+      if (typeof dataOrEmbedding === "object" && dataOrEmbedding !== null && !Array.isArray(dataOrEmbedding)) {
+        // Passed as a single payload object from AttendancePage.jsx
+        payload = dataOrEmbedding;
+      } else {
+        // Passed as positional arguments
+        const isImage = typeof dataOrEmbedding === "string" && dataOrEmbedding.startsWith("data:image");
+        payload = {
+          image: isImage ? dataOrEmbedding : undefined,
+          embedding: isImage ? undefined : dataOrEmbedding,
+          classId,
+          subject,
+          room,
+          forceFail
+        };
+      }
 
       const response = await api.post("/face/verify", payload);
       return response.data;
@@ -165,7 +173,7 @@ export const attendanceService = {
       if (error.response && error.response.data && error.response.data.message) {
         throw new Error(error.response.data.message);
       }
-      return { verified: true, confidence: 98.4, message: "Face match verified!" };
+      throw new Error(error.message || "Face verification request failed.");
     }
   },
 
