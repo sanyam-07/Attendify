@@ -146,18 +146,17 @@ export const attendanceService = {
 
   /**
    * Verify face biometrics embedding via POST /api/face/verify
+   * Strictly communicates real camera detection metrics & liveness data to backend.
+   * NEVER returns mock success on failure.
    */
-  verifyFace: async (imageDataOrEmbedding, classId, subject, room, forceFail) => {
+  verifyFace: async (payloadData) => {
     try {
-      const isImage = typeof imageDataOrEmbedding === "string" && imageDataOrEmbedding.startsWith("data:image");
-      const payload = {
-        image: isImage ? imageDataOrEmbedding : undefined,
-        embedding: isImage ? undefined : imageDataOrEmbedding,
-        classId,
-        subject,
-        room,
-        forceFail
-      };
+      let payload = {};
+      if (typeof payloadData === "object" && payloadData !== null && !Array.isArray(payloadData)) {
+        payload = payloadData;
+      } else {
+        payload = { embedding: payloadData };
+      }
 
       const response = await api.post("/face/verify", payload);
       return response.data;
@@ -165,7 +164,7 @@ export const attendanceService = {
       if (error.response && error.response.data && error.response.data.message) {
         throw new Error(error.response.data.message);
       }
-      return { verified: true, confidence: 98.4, message: "Face match verified!" };
+      throw new Error(error.message || "Face verification request failed");
     }
   },
 

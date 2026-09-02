@@ -140,7 +140,9 @@ export const ProfilePage = () => {
 
             detector: {
               enabled: true,
-              rotation: true
+              rotation: true,
+              maxDetected: 5,
+              minConfidence: 0.20
             },
 
             description: {
@@ -148,7 +150,7 @@ export const ProfilePage = () => {
             },
 
             mesh: {
-              enabled: false
+              enabled: true
             },
 
             iris: {
@@ -296,13 +298,36 @@ const triggerCapture = () => {
         console.log("Human Result:", result);
 
         if (!result.face || result.face.length === 0) {
-          toast.error("No face detected.");
+          toast.error("No face detected in camera frame.");
+          setBioState("idle");
+          stopWebcam();
+          return;
+        }
+
+        if (result.face.length > 1) {
+          toast.error("Multiple faces detected in frame. Please ensure only one face is visible.");
           setBioState("idle");
           stopWebcam();
           return;
         }
 
         const face = result.face[0];
+        const faceScore = face.score || face.boxScore || 0;
+        const faceBox = face.box || [0, 0, 0, 0];
+
+        if (faceScore < 0.25) {
+          toast.error(`Face detection confidence too low (${(faceScore * 100).toFixed(1)}%). Ensure good lighting.`);
+          setBioState("idle");
+          stopWebcam();
+          return;
+        }
+
+        if ((faceBox[2] || 0) < 80 || (faceBox[3] || 0) < 80) {
+          toast.error("Face is too far from camera. Move closer to register.");
+          setBioState("idle");
+          stopWebcam();
+          return;
+        }
 
         console.log("Detected Face:", face);
 
