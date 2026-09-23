@@ -183,7 +183,7 @@ const getStudentAnalytics = asyncHandler(async (req, res) => {
         receiver: userId,
         receiverType: "Student",
         sender: userId,
-        senderName: "AI Intelligence Engine",
+        senderName: "Attendance System",
         title: "Attendance Warning Alert",
         message: `Your overall attendance is currently ${attendancePercentage}%. Please attend upcoming lectures to avoid shortage.`,
         type: "Alert",

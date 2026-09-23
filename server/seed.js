@@ -48,14 +48,14 @@ const seedData = async () => {
       email: "admin@attendify.com",
       password: "password123",
       role: "admin",
-      phone: "+1 (555) 999-0000"
+      phone: "+91 98765 43200"
     });
 
     console.log("Creating 3 Teachers...");
     const teacherData = [
-      { name: "Dr. Sarah Jenkins", email: "sarah.jenkins@attendify.com", empId: "EMP-101", subject: "AI & Machine Learning" },
-      { name: "Prof. David Wilson", email: "david.wilson@attendify.com", empId: "EMP-102", subject: "Database Management Systems" },
-      { name: "Dr. Michael Brown", email: "michael.brown@attendify.com", empId: "EMP-103", subject: "Web Technologies" }
+      { name: "Dr. Rahul Sharma", email: "rahul.sharma@attendify.com", empId: "EMP-101", subject: "AI & Machine Learning" },
+      { name: "Prof. Amit Verma", email: "amit.verma@attendify.com", empId: "EMP-102", subject: "Database Management Systems" },
+      { name: "Dr. Neha Gupta", email: "neha.gupta@attendify.com", empId: "EMP-103", subject: "Web Technologies" }
     ];
 
     const teacherDocs = [];
@@ -64,7 +64,8 @@ const seedData = async () => {
         name: t.name,
         email: t.email,
         password: "password123",
-        role: "teacher"
+        role: "teacher",
+        phone: "+91 98765 43201"
       });
 
       const teacherDoc = await Teacher.create({
@@ -102,24 +103,26 @@ const seedData = async () => {
 
     console.log("Creating 20 Students...");
     const studentNames = [
-      "Alex Rivera", "Emma Watson", "Liam Johnson", "Olivia Smith", "Noah Williams",
-      "Ava Brown", "Ethan Davis", "Sophia Miller", "Mason Wilson", "Isabella Moore",
-      "Lucas Taylor", "Mia Anderson", "Oliver Thomas", "Amelia Jackson", "Elijah White",
-      "Charlotte Harris", "James Martin", "Harper Thompson", "Benjamin Garcia", "Evelyn Martinez"
+      "Aman Kumar", "Rohit Sharma", "Ananya Singh", "Priya Verma", "Aditya Gupta",
+      "Neha Sharma", "Karan Mehta", "Sneha Patel", "Arjun Yadav", "Riya Joshi",
+      "Vivek Agarwal", "Pooja Sharma", "Nikhil Jain", "Simran Kaur", "Abhishek Singh",
+      "Kavya Gupta", "Mohit Verma", "Shreya Mehta", "Akash Sharma", "Isha Kapoor"
     ];
 
     const studentDocs = [];
     for (let i = 0; i < studentNames.length; i++) {
       const name = studentNames[i];
-      const firstName = name.split(" ")[0].toLowerCase();
-      const email = `${firstName}.rivera@attendify.com`; // e.g. alex.rivera@attendify.com or alex.rivera
+      const emailParts = name.toLowerCase().split(" ");
+      const email = `${emailParts[0]}.${emailParts[1]}@attendify.com`;
       const enrollmentNo = `CS2026${1001 + i}`;
+      const phone = `+91 98765 432${(10 + i).toString().padStart(2, '0')}`;
 
       const u = await User.create({
         name,
-        email: i === 0 ? "alex.rivera@attendify.com font" && "alex.rivera@attendify.com" : email,
+        email,
         password: "password123",
-        role: "student"
+        role: "student",
+        phone
       });
 
       const s = await Student.create({
@@ -143,7 +146,7 @@ const seedData = async () => {
       teacherName: teacherDocs[0].user.name,
       subject: "AI & Machine Learning",
       room: "Lab-3",
-      classId: "SUB301",
+      classId: "CS601",
       isActive: true,
       qrCodeToken: `qr-token-active-${Date.now()}`
     });
@@ -151,14 +154,13 @@ const seedData = async () => {
     console.log("Creating Timetable Schedules...");
     const Timetable = require("./models/Timetable");
     await Timetable.deleteMany();
-    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
     const timetableData = [
-      { subject: "AI & Machine Learning", dayOfWeek: "Monday", startTime: "09:00 AM", endTime: "10:30 AM", room: "Lab-3", teacherName: "Dr. Sarah Jenkins" },
-      { subject: "Database Management Systems", dayOfWeek: "Monday", startTime: "11:00 AM", endTime: "12:30 PM", room: "Hall-101", teacherName: "Prof. David Wilson" },
-      { subject: "Web Technologies", dayOfWeek: "Tuesday", startTime: "10:00 AM", endTime: "11:30 AM", room: "Lab-1", teacherName: "Dr. Michael Brown" },
-      { subject: "Operating Systems", dayOfWeek: "Wednesday", startTime: "02:00 PM", endTime: "03:30 PM", room: "Room-204", teacherName: "Dr. Sarah Jenkins" },
-      { subject: "Computer Networks", dayOfWeek: "Thursday", startTime: "09:00 AM", endTime: "10:30 AM", room: "Hall-102", teacherName: "Prof. David Wilson" },
-      { subject: "AI & Machine Learning", dayOfWeek: "Friday", startTime: "01:00 PM", endTime: "02:30 PM", room: "Lab-3", teacherName: "Dr. Sarah Jenkins" }
+      { subject: "AI & Machine Learning", dayOfWeek: "Monday", startTime: "09:00 AM", endTime: "10:30 AM", room: "Lab-3", teacherName: "Dr. Rahul Sharma" },
+      { subject: "Database Management Systems", dayOfWeek: "Monday", startTime: "11:00 AM", endTime: "12:30 PM", room: "Hall-101", teacherName: "Prof. Amit Verma" },
+      { subject: "Web Technologies", dayOfWeek: "Tuesday", startTime: "10:00 AM", endTime: "11:30 AM", room: "Lab-1", teacherName: "Dr. Neha Gupta" },
+      { subject: "Operating Systems", dayOfWeek: "Wednesday", startTime: "02:00 PM", endTime: "03:30 PM", room: "Room-204", teacherName: "Dr. Rahul Sharma" },
+      { subject: "Computer Networks", dayOfWeek: "Thursday", startTime: "09:00 AM", endTime: "10:30 AM", room: "Hall-102", teacherName: "Prof. Amit Verma" },
+      { subject: "AI & Machine Learning", dayOfWeek: "Friday", startTime: "01:00 PM", endTime: "02:30 PM", room: "Lab-3", teacherName: "Dr. Rahul Sharma" }
     ];
     await Timetable.insertMany(timetableData);
 
@@ -166,9 +168,9 @@ const seedData = async () => {
     const Assignment = require("./models/Assignment");
     await Assignment.deleteMany();
     await Assignment.insertMany([
-      { title: "Neural Network Architecture Optimization", subject: "AI & Machine Learning", teacherName: "Dr. Sarah Jenkins", dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), status: "Pending", description: "Implement backpropagation algorithm from scratch in Python." },
-      { title: "SQL Schema Normalization & Indexing", subject: "Database Management Systems", teacherName: "Prof. David Wilson", dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), status: "Pending", description: "Design 3NF database schema for e-commerce system." },
-      { title: "RESTful API Integration Project", subject: "Web Technologies", teacherName: "Dr. Michael Brown", dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), status: "Submitted", description: "Build full stack React Express application." }
+      { title: "Neural Network Architecture Optimization", subject: "AI & Machine Learning", teacherName: "Dr. Rahul Sharma", dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), status: "Pending", description: "Implement backpropagation algorithm from scratch in Python." },
+      { title: "SQL Schema Normalization & Indexing", subject: "Database Management Systems", teacherName: "Prof. Amit Verma", dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), status: "Pending", description: "Design 3NF database schema for e-commerce system." },
+      { title: "RESTful API Integration Project", subject: "Web Technologies", teacherName: "Dr. Neha Gupta", dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), status: "Submitted", description: "Build full stack React Express application." }
     ]);
 
     console.log("Creating Exam Schedule...");
@@ -184,13 +186,13 @@ const seedData = async () => {
     const Notification = require("./models/Notification");
     await Notification.deleteMany();
     await Notification.insertMany([
-      { title: "Attendance Session Active", message: "Dr. Sarah Jenkins started AI & Machine Learning check-in in Lab-3.", receiverType: "Student", type: "Attendance", priority: "High", actionUrl: "#/attendance", isRead: false },
+      { title: "Attendance Session Active", message: "Dr. Rahul Sharma started AI & Machine Learning check-in in Lab-3.", receiverType: "Student", type: "Attendance", priority: "High", actionUrl: "#/attendance", isRead: false },
       { title: "Assignment Deadline Approaching", message: "Neural Network Architecture Optimization is due in 3 days.", receiverType: "Student", type: "Assignment", priority: "Medium", actionUrl: "#/curriculum", isRead: false },
       { title: "Mid-Term Evaluation Scheduled", message: "Machine Learning Mid-Term exam scheduled in Auditorium A.", receiverType: "Student", type: "Exam", priority: "High", actionUrl: "#/curriculum", isRead: false },
       { title: "Timetable Room Update", message: "Web Technologies lecture moved from Lab-1 to Room-204.", receiverType: "Student", type: "Timetable", priority: "Low", actionUrl: "#/curriculum", isRead: true },
       { title: "Low Attendance Alert", message: "Attention: 3 students in Database Management Systems have attendance below 75%.", receiverType: "Teacher", type: "Attendance", priority: "High", actionUrl: "#/analytics", isRead: false },
       { title: "Assignment Submissions Received", message: "18 students submitted Neural Network Architecture assignment.", receiverType: "Teacher", type: "Assignment", priority: "Medium", isRead: true },
-      { title: "Biometric AI System Active", message: "Dual Face ID & Dynamic QR verification system operating at 99.8% precision.", receiverType: "All", type: "System", priority: "Medium", isRead: false },
+      { title: "Face and QR Verification Active", message: "Face and QR attendance verification is active.", receiverType: "All", type: "System", priority: "Medium", isRead: false },
       { title: "System Maintenance Notice", message: "Scheduled database backup will take place on Sunday at 02:00 AM.", receiverType: "All", type: "Announcement", priority: "Low", isRead: false }
     ]);
 
@@ -222,8 +224,8 @@ const seedData = async () => {
     console.log("Default Login Credentials:");
     console.log("------------------------------------------------");
     console.log("🔑 Admin:   admin@attendify.com        / password123");
-    console.log("🔑 Teacher: sarah.jenkins@attendify.com/ password123");
-    console.log("🔑 Student: alex.rivera@attendify.com  / password123");
+    console.log("🔑 Teacher: rahul.sharma@attendify.com / password123");
+    console.log("🔑 Student: aman.kumar@attendify.com   / password123");
     console.log("================================================\n");
 
     process.exit(0);

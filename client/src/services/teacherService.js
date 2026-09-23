@@ -61,7 +61,7 @@ export const teacherService = {
         const sessionData = {
           classId: classId || "SUB301",
           subject: subjectName || "AI & Machine Learning",
-          faculty: "Dr. Sarah Jenkins",
+          faculty: "Dr. Rahul Sharma",
           room: roomName || "Lab-3",
           sessionId: response.data.session._id,
           startTime: Date.now()
@@ -76,7 +76,7 @@ export const teacherService = {
     const mockSessionData = {
       classId: classId || "SUB301",
       subject: subjectName || "AI & Machine Learning",
-      faculty: "Dr. Sarah Jenkins",
+      faculty: "Dr. Rahul Sharma",
       room: roomName || "Lab-3",
       startTime: Date.now()
     };

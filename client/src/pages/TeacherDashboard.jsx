@@ -245,7 +245,7 @@ export const TeacherDashboard = () => {
         {/* HEADER BANNER */}
         <motion.div variants={itemVariants} className="border-b border-slate-205 dark:border-slate-855 pb-5">
           <h2 className="text-xl sm:text-2xl font-black font-sans text-slate-900 dark:text-white flex items-center gap-2.5">
-            Faculty Console — {teacherProfile?.name || "Dr. Sarah Jenkins"}
+            Faculty Console — {teacherProfile?.name || "Dr. Rahul Sharma"}
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-450 mt-1.5 font-medium leading-relaxed">
             Department: {teacherProfile?.department || "Computer Science"} • Employee ID: <span className="font-mono font-bold text-primary">{teacherProfile?.employeeId || "EMP-101"}</span>

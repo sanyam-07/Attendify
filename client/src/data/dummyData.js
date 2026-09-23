@@ -4,13 +4,13 @@
 export const dummyUsers = {
   student: {
     id: "STU001",
-    name: "Alex Rivera",
-    email: "alex.rivera@university.edu",
+    name: "Aman Kumar",
+    email: "aman.kumar@attendify.com",
     role: "student",
-    enrollmentNo: "ENR202409831",
+    enrollmentNo: "CS20260001",
     department: "Computer Science & Engineering",
     semester: "6th Semester",
-    phone: "+1 (555) 234-5678",
+    phone: "+91 98765 43210",
     avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=120",
     faceRegistered: true,
     faceRegistrationDate: "2026-02-15",
@@ -21,12 +21,12 @@ export const dummyUsers = {
   },
   teacher: {
     id: "TCH012",
-    name: "Dr. Sarah Jenkins",
-    email: "sarah.jenkins@university.edu",
+    name: "Dr. Rahul Sharma",
+    email: "rahul.sharma@attendify.com",
     role: "teacher",
     department: "Computer Science & Engineering",
     designation: "Associate Professor",
-    phone: "+1 (555) 987-6543",
+    phone: "+91 98765 43201",
     avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=120",
     classesToday: [
       { id: "c1", name: "Mathematics IV", time: "09:00 AM - 10:30 AM", room: "LHC-102", batch: "CSE-A", semester: "6th" },
@@ -36,70 +36,70 @@ export const dummyUsers = {
   },
   admin: {
     id: "ADM001",
-    name: "Principal Arthur Pendelton",
-    email: "admin.office@university.edu",
+    name: "System Admin",
+    email: "admin@attendify.com",
     role: "admin",
     department: "Administration",
-    phone: "+1 (555) 111-2222",
+    phone: "+91 98765 43200",
     avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=120",
   }
 };
 
 export const todayClasses = [
   {
-    id: "SUB301",
+    id: "CS601",
     subject: "AI & Machine Learning",
-    faculty: "Dr. Sarah Jenkins",
+    faculty: "Dr. Rahul Sharma",
     time: "11:00 AM - 12:30 PM",
     room: "Lab-3",
     status: "Upcoming",
     sessionActive: true,
-    code: "CSE-301"
+    code: "CS601"
   },
   {
-    id: "SUB302",
+    id: "CS602",
     subject: "Database Management Systems",
-    faculty: "Prof. Michael Chang",
+    faculty: "Prof. Amit Verma",
     time: "01:30 PM - 03:00 PM",
     room: "LHC-104",
     status: "Scheduled",
     sessionActive: false,
-    code: "CSE-302"
+    code: "CS602"
   },
   {
-    id: "SUB303",
-    subject: "Software Engineering",
-    faculty: "Dr. Sarah Jenkins",
+    id: "CS603",
+    subject: "Web Technologies",
+    faculty: "Dr. Neha Gupta",
     time: "03:30 PM - 05:00 PM",
-    room: "LHC-204",
+    room: "Lab-1",
     status: "Scheduled",
     sessionActive: false,
-    code: "CSE-303"
+    code: "CS603"
   }
 ];
 
 export const weeklyTimetable = {
   Monday: [
-    { subject: "AI & Machine Learning", time: "11:00 AM - 12:30 PM", room: "Lab-3", faculty: "Dr. Sarah Jenkins" },
-    { subject: "DBMS", time: "01:30 PM - 03:00 PM", room: "LHC-104", faculty: "Prof. Michael Chang" }
+    { subject: "AI & Machine Learning", time: "11:00 AM - 12:30 PM", room: "Lab-3", faculty: "Dr. Rahul Sharma" },
+    { subject: "DBMS", time: "01:30 PM - 03:00 PM", room: "LHC-104", faculty: "Prof. Amit Verma" }
   ],
   Tuesday: [
-    { subject: "Mathematics IV", time: "09:00 AM - 10:30 AM", room: "LHC-102", faculty: "Dr. Sarah Jenkins" },
-    { subject: "Computer Networks", time: "11:00 AM - 12:30 PM", room: "Lab-1", faculty: "Dr. Robert Vance" },
-    { subject: "Software Engineering", time: "03:30 PM - 05:00 PM", room: "LHC-204", faculty: "Dr. Sarah Jenkins" }
+    { subject: "Mathematics IV", time: "09:00 AM - 10:30 AM", room: "LHC-102", faculty: "Dr. Rahul Sharma" },
+    { subject: "Computer Networks", time: "11:00 AM - 12:30 PM", room: "Lab-1", faculty: "Dr. Neha Gupta" },
+    { subject: "Software Engineering", time: "03:30 PM - 05:00 PM", room: "LHC-204", faculty: "Dr. Rahul Sharma" }
   ],
   Wednesday: [
-    { subject: "AI & Machine Learning", time: "11:00 AM - 12:30 PM", room: "Lab-3", faculty: "Dr. Sarah Jenkins" },
-    { subject: "DBMS", time: "01:30 PM - 03:00 PM", room: "LHC-104", faculty: "Prof. Michael Chang" },
-    { subject: "Software Engineering", time: "03:30 PM - 05:00 PM", room: "LHC-204", faculty: "Dr. Sarah Jenkins" }
+    { subject: "AI & Machine Learning", time: "11:00 AM - 12:30 PM", room: "Lab-3", faculty: "Dr. Rahul Sharma" },
+    { subject: "DBMS", time: "01:30 PM - 03:00 PM", room: "LHC-104", faculty: "Prof. Amit Verma" },
+    { subject: "Software Engineering", time: "03:30 PM - 05:00 PM", room: "LHC-204", faculty: "Dr. Rahul Sharma" }
   ],
   Thursday: [
-    { subject: "Computer Networks", time: "11:00 AM - 12:30 PM", room: "Lab-1", faculty: "Dr. Robert Vance" },
-    { subject: "Mathematics IV", time: "02:00 PM - 03:30 PM", room: "LHC-102", faculty: "Dr. Sarah Jenkins" }
+    { subject: "Computer Networks", time: "11:00 AM - 12:30 PM", room: "Lab-1", faculty: "Dr. Neha Gupta" },
+    { subject: "Mathematics IV", time: "02:00 PM - 03:30 PM", room: "LHC-102", faculty: "Dr. Rahul Sharma" }
   ],
   Friday: [
-    { subject: "AI & Machine Learning Lab", time: "09:00 AM - 12:00 PM", room: "Lab-3", faculty: "Dr. Sarah Jenkins" },
-    { subject: "DBMS Lab", time: "01:30 PM - 04:30 PM", room: "Lab-2", faculty: "Prof. Michael Chang" }
+    { subject: "AI & Machine Learning Lab", time: "09:00 AM - 12:00 PM", room: "Lab-3", faculty: "Dr. Rahul Sharma" },
+    { subject: "DBMS Lab", time: "01:30 PM - 04:30 PM", room: "Lab-2", faculty: "Prof. Amit Verma" }
   ]
 };
 
@@ -115,11 +115,11 @@ export const attendanceHistory = [
 ];
 
 export const subjectAttendance = [
-  { subject: "AI & Machine Learning", code: "CSE-301", present: 16, absent: 2, late: 0, percentage: 88.8, faculty: "Dr. Sarah Jenkins", syllabus: 72 },
-  { subject: "Database Management Systems", code: "CSE-302", present: 12, absent: 4, late: 1, percentage: 70.6, faculty: "Prof. Michael Chang", syllabus: 60 },
-  { subject: "Software Engineering", code: "CSE-303", present: 14, absent: 3, late: 0, percentage: 82.3, faculty: "Dr. Sarah Jenkins", syllabus: 80 },
-  { subject: "Computer Networks", code: "CSE-304", present: 11, absent: 4, late: 1, percentage: 68.7, faculty: "Dr. Robert Vance", syllabus: 65 },
-  { subject: "Mathematics IV", code: "MTH-302", present: 9, absent: 1, late: 1, percentage: 81.8, faculty: "Dr. Sarah Jenkins", syllabus: 55 }
+  { subject: "AI & Machine Learning", code: "CS601", present: 16, absent: 2, late: 0, percentage: 88.8, faculty: "Dr. Rahul Sharma", syllabus: 72 },
+  { subject: "Database Management Systems", code: "CS602", present: 12, absent: 4, late: 1, percentage: 70.6, faculty: "Prof. Amit Verma", syllabus: 60 },
+  { subject: "Web Technologies", code: "CS603", present: 14, absent: 3, late: 0, percentage: 82.3, faculty: "Dr. Neha Gupta", syllabus: 80 },
+  { subject: "Operating Systems", code: "CS604", present: 11, absent: 4, late: 1, percentage: 68.7, faculty: "Dr. Rahul Sharma", syllabus: 65 },
+  { subject: "Computer Networks", code: "CS605", present: 9, absent: 1, late: 1, percentage: 81.8, faculty: "Prof. Amit Verma", syllabus: 55 }
 ];
 
 export const weeklyStats = [
@@ -147,7 +147,7 @@ export const heatmapData = [
 ];
 
 export const mockNotifications = [
-  { id: "n1", type: "session_start", title: "Attendance Session Started", message: "Dr. Sarah Jenkins started attendance for AI & Machine Learning. Mark your presence now.", time: "Just now", read: false, link: "/attendance" },
+  { id: "n1", type: "session_start", title: "Attendance Session Started", message: "Dr. Rahul Sharma started attendance for AI & Machine Learning. Mark your presence now.", time: "Just now", read: false, link: "/attendance" },
   { id: "n2", type: "success", title: "Attendance Marked", message: "Your attendance for Mathematics IV has been successfully verified using Face ID.", time: "1 hour ago", read: true },
   { id: "n3", type: "assignment", title: "New Assignment Added", message: "DBMS Assignment 3: 'Query Optimization' is due on July 25, 2026.", time: "Yesterday", read: true },
   { id: "n4", type: "warning", title: "Attendance Missed Alert", message: "You were marked absent for Database Management Systems on July 17.", time: "2 days ago", read: true },
@@ -157,7 +157,7 @@ export const mockNotifications = [
 export const assignments = [
   { id: "a1", title: "Neural Networks Implementation", subject: "AI & Machine Learning", due: "2026-07-22", status: "Submitted", grade: "A" },
   { id: "a2", title: "Normalization & Indexing Problems", subject: "Database Management Systems", due: "2026-07-25", status: "Pending", grade: "-" },
-  { id: "a3", title: "SRS Documentation", subject: "Software Engineering", due: "2026-07-30", status: "Pending", grade: "-" }
+  { id: "a3", title: "RESTful API Integration Project", subject: "Web Technologies", due: "2026-07-30", status: "Pending", grade: "-" }
 ];
 
 export const upcomingExams = [
@@ -179,24 +179,23 @@ export const adminStats = {
     { name: "Bio-Technology", students: 50, attendance: 82.9 }
   ],
   systemActivities: [
-    { id: "sa1", user: "Dr. Jenkins", action: "Started attendance session", target: "AI & ML (CSE-A)", time: "10 mins ago" },
-    { id: "sa2", user: "Admin Office", action: "Added new teacher profile", target: "Dr. Frank Miller", time: "1 hour ago" },
+    { id: "sa1", user: "Dr. Rahul Sharma", action: "Started attendance session", target: "AI & ML (CSE-A)", time: "10 mins ago" },
+    { id: "sa2", user: "Admin Office", action: "Added new teacher profile", target: "Prof. Amit Verma", time: "1 hour ago" },
     { id: "sa3", user: "System", action: "Auto-archived weekly logs", target: "Week 28 Reports", time: "12 hours ago" },
-    { id: "sa4", user: "Prof. Chang", action: "Exported attendance sheet", target: "DBMS Lab", time: "Yesterday" }
+    { id: "sa4", user: "Prof. Amit Verma", action: "Exported attendance sheet", target: "DBMS Lab", time: "Yesterday" }
   ]
 };
 
 export const mockTeachers = [
-  { id: "TCH012", name: "Dr. Sarah Jenkins", email: "sarah.jenkins@university.edu", department: "Computer Science", subjects: ["AI & ML", "Software Eng.", "Maths"], classes: 12, rating: 4.8 },
-  { id: "TCH013", name: "Prof. Michael Chang", email: "michael.chang@university.edu", department: "Computer Science", subjects: ["DBMS", "OS"], classes: 15, rating: 4.6 },
-  { id: "TCH014", name: "Dr. Robert Vance", email: "robert.vance@university.edu", department: "Computer Science", subjects: ["Computer Networks", "Cyber Security"], classes: 10, rating: 4.5 },
-  { id: "TCH015", name: "Prof. Clara Higgins", email: "clara.higgins@university.edu", department: "Electrical Eng.", subjects: ["Digital Circuits", "Signal Processing"], classes: 14, rating: 4.7 }
+  { id: "TCH012", name: "Dr. Rahul Sharma", email: "rahul.sharma@attendify.com", department: "Computer Science", subjects: ["AI & ML", "Software Eng.", "Maths"], classes: 12, rating: 4.8 },
+  { id: "TCH013", name: "Prof. Amit Verma", email: "amit.verma@attendify.com", department: "Computer Science", subjects: ["DBMS", "OS"], classes: 15, rating: 4.6 },
+  { id: "TCH014", name: "Dr. Neha Gupta", email: "neha.gupta@attendify.com", department: "Computer Science", subjects: ["Web Technologies", "Computer Networks"], classes: 10, rating: 4.5 }
 ];
 
 export const mockStudents = [
-  { id: "STU001", name: "Alex Rivera", email: "alex.rivera@university.edu", enrollment: "ENR202409831", department: "Computer Science", semester: "6th", attendance: 78.4, status: "Active" },
-  { id: "STU002", name: "Brenda Vance", email: "brenda.v@university.edu", enrollment: "ENR202409832", department: "Computer Science", semester: "6th", attendance: 89.1, status: "Active" },
-  { id: "STU003", name: "Charles Miller", email: "charles.m@university.edu", enrollment: "ENR202409833", department: "Computer Science", semester: "6th", attendance: 64.2, status: "Warning" },
-  { id: "STU004", name: "David Kim", email: "david.k@university.edu", enrollment: "ENR202409834", department: "Computer Science", semester: "6th", attendance: 92.5, status: "Active" },
-  { id: "STU005", name: "Emma Watson", email: "emma.w@university.edu", enrollment: "ENR202409835", department: "Computer Science", semester: "6th", attendance: 74.8, status: "Warning" }
+  { id: "STU001", name: "Aman Kumar", email: "aman.kumar@attendify.com", enrollment: "CS20260001", department: "Computer Science", semester: "6th", attendance: 78.4, status: "Active" },
+  { id: "STU002", name: "Rohit Sharma", email: "rohit.sharma@attendify.com", enrollment: "CS20260002", department: "Computer Science", semester: "6th", attendance: 89.1, status: "Active" },
+  { id: "STU003", name: "Ananya Singh", email: "ananya.singh@attendify.com", enrollment: "CS20260003", department: "Computer Science", semester: "6th", attendance: 64.2, status: "Warning" },
+  { id: "STU004", name: "Priya Verma", email: "priya.verma@attendify.com", enrollment: "CS20260004", department: "Computer Science", semester: "6th", attendance: 92.5, status: "Active" },
+  { id: "STU005", name: "Aditya Gupta", email: "aditya.gupta@attendify.com", enrollment: "CS20260005", department: "Computer Science", semester: "6th", attendance: 74.8, status: "Warning" }
 ];

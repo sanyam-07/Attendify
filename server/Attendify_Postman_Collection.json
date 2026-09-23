@@ -35,7 +35,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"email\": \"alex.rivera@attendify.com\",\n  \"password\": \"password123\"\n}"
+							"raw": "{\n  \"email\": \"aman.kumar@attendify.com\",\n  \"password\": \"password123\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/auth/login",
@@ -370,7 +370,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"subject\": \"AI & Machine Learning\",\n  \"faculty\": \"Dr. Sarah Jenkins\",\n  \"room\": \"Lab-3\",\n  \"method\": \"Face ID\"\n}"
+							"raw": "{\n  \"subject\": \"AI & Machine Learning\",\n  \"faculty\": \"Dr. Rahul Sharma\",\n  \"room\": \"Lab-3\",\n  \"method\": \"Face ID\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/attendance/mark",

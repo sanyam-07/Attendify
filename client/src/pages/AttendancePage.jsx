@@ -560,7 +560,7 @@ export const AttendancePage = () => {
                   <span className="text-[10px] uppercase font-bold tracking-widest text-primary">Attendance Verification System</span>
                   <h3 className="text-xl font-black text-slate-900 dark:text-white">Select Verification Method</h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Active Lecture: <strong className="text-slate-800 dark:text-slate-200">{activeSession?.subject || "AI & Machine Learning"}</strong> • {activeSession?.faculty || "Dr. Sarah Jenkins"} • {activeSession?.room || "Lab-3"}
+                    Active Lecture: <strong className="text-slate-800 dark:text-slate-200">{activeSession?.subject || "AI & Machine Learning"}</strong> • {activeSession?.faculty || "Dr. Rahul Sharma"} • {activeSession?.room || "Lab-3"}
                   </p>
                 </div>
               </div>

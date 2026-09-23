@@ -28,7 +28,7 @@ export const attendanceService = {
       {
         id: "SUB301",
         subject: "AI & Machine Learning",
-        faculty: "Dr. Sarah Jenkins",
+        faculty: "Dr. Rahul Sharma",
         time: "11:00 AM - 12:30 PM",
         room: "Lab-3",
         status: "Upcoming",
@@ -38,7 +38,7 @@ export const attendanceService = {
       {
         id: "SUB302",
         subject: "Database Management Systems",
-        faculty: "Prof. David Wilson",
+        faculty: "Prof. Amit Verma",
         time: "01:30 PM - 03:00 PM",
         room: "Hall-101",
         status: "Scheduled",
@@ -48,7 +48,7 @@ export const attendanceService = {
       {
         id: "SUB303",
         subject: "Web Technologies",
-        faculty: "Dr. Michael Brown",
+        faculty: "Dr. Neha Gupta",
         time: "03:30 PM - 05:00 PM",
         room: "Lab-1",
         status: "Scheduled",

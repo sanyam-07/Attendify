@@ -75,8 +75,8 @@ export const StudentDashboard = () => {
         }));
 
         setClasses(formattedClasses.length ? formattedClasses : [
-          { id: "c1", subject: "AI & Machine Learning", faculty: "Dr. Sarah Jenkins", room: "Lab-3", time: "09:00 AM - 10:30 AM", sessionActive: activeSessRes?.active, status: "Active" },
-          { id: "c2", subject: "Database Management Systems", faculty: "Prof. David Wilson", room: "Hall-101", time: "11:00 AM - 12:30 PM", sessionActive: false, status: "Upcoming" }
+          { id: "c1", subject: "AI & Machine Learning", faculty: "Dr. Rahul Sharma", room: "Lab-3", time: "09:00 AM - 10:30 AM", sessionActive: activeSessRes?.active, status: "Active" },
+          { id: "c2", subject: "Database Management Systems", faculty: "Prof. Amit Verma", room: "Hall-101", time: "11:00 AM - 12:30 PM", sessionActive: false, status: "Upcoming" }
         ]);
 
         if (activeSessRes && activeSessRes.active) {

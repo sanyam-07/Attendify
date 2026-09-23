@@ -31,7 +31,7 @@ export const LandingPage = () => {
   const features = [
     {
       icon: ScanFace,
-      title: "AI Face Recognition",
+      title: "Face Verification",
       desc: "Instant biological check-ins using 3D facial scans. Employs advanced deep learning models to secure attendance records.",
       comingSoon: false
     },
@@ -141,7 +141,7 @@ export const LandingPage = () => {
           className="inline-flex items-center gap-2.5 px-4.5 py-2 rounded-full bg-slate-950/80 border border-slate-800/80 text-xs font-semibold text-cyan-400 mb-10 shadow-xl"
         >
           <Sparkles size={13} className="animate-pulse" />
-          <span className="tracking-wide">AI-Powered Smart Attendance</span>
+          <span className="tracking-wide">Smart Attendance System</span>
         </motion.div>
 
         {/* Hero title */}
@@ -151,7 +151,7 @@ export const LandingPage = () => {
           transition={{ duration: 0.7, delay: 0.1 }}
           className="text-5xl sm:text-7xl md:text-8xl font-black tracking-tight font-sans max-w-5xl leading-[1.05] mb-8"
         >
-          AI-Based Attendance for{" "}
+          Smart Attendance for{" "}
           <span className="bg-gradient-to-r from-blue-500 via-indigo-400 to-cyan-300 bg-clip-text text-transparent">
             Modern Colleges
           </span>

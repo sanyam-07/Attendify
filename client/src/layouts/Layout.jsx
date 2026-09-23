@@ -38,8 +38,8 @@ export const Layout = ({ children }) => {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
   const currentUser = authService.getCurrentUser() || {
-    name: "Alex Rivera",
-    email: "alex.rivera@university.edu",
+    name: "Aman Kumar",
+    email: "aman.kumar@attendify.com",
     role: "student",
     avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=120"
   };

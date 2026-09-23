@@ -12,7 +12,7 @@ const timetableSchema = new mongoose.Schema(
     },
     teacherName: {
       type: String,
-      default: "Dr. Sarah Jenkins"
+      default: "Dr. Rahul Sharma"
     },
     department: {
       type: String,

@@ -298,7 +298,7 @@ const verifyFace = asyncHandler(async (req, res) => {
   let activeSession = await AttendanceSession.findOne({ isActive: true }).sort({ startTime: -1 });
 
   const targetSubject = activeSession?.subject || subject || "AI & Machine Learning";
-  const targetFaculty = activeSession?.teacherName || "Dr. Sarah Jenkins";
+  const targetFaculty = activeSession?.teacherName || "Dr. Rahul Sharma";
   const targetRoom = activeSession?.room || room || "Lab-3";
 
   const startOfDay = new Date();

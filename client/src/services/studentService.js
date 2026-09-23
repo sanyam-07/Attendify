@@ -82,8 +82,8 @@ export const studentService = {
     if (saved) return JSON.parse(saved);
 
     return {
-      name: "Alex Rivera",
-      email: "alex.rivera@attendify.com",
+      name: "Aman Kumar",
+      email: "aman.kumar@attendify.com",
       enrollmentNo: "CS20261001",
       department: "Computer Science",
       semester: "6th Semester",
@@ -143,8 +143,8 @@ export const studentService = {
 
       return {
         subjects: formattedSubjects.length ? formattedSubjects : [
-          { code: "CS601", subject: "AI & Machine Learning", faculty: "Dr. Sarah Jenkins", syllabus: 85 },
-          { code: "CS602", subject: "Database Management Systems", faculty: "Prof. David Wilson", syllabus: 78 }
+          { code: "CS601", subject: "AI & Machine Learning", faculty: "Dr. Rahul Sharma", syllabus: 85 },
+          { code: "CS602", subject: "Database Management Systems", faculty: "Prof. Amit Verma", syllabus: 78 }
         ],
         assignments: formattedAssignments.length ? formattedAssignments : [
           { id: "asg1", title: "Neural Network Architecture Optimization", subject: "AI & Machine Learning", due: "3 Days", status: "Pending", grade: "-" }
