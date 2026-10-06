@@ -1,5 +1,5 @@
 // Attendance Controller
-// Handles session creation, active session tracking, 10-second dynamic QR signing & verification, check-in marking, and history log retrieval.
+// Handles session creation, active session tracking, 30-second dynamic QR signing & verification, check-in marking, and history log retrieval.
 
 const asyncHandler = require("express-async-handler");
 const crypto = require("crypto");
@@ -11,7 +11,7 @@ const User = require("../models/User");
 const JWT_SECRET = process.env.JWT_SECRET || "attendify_jwt_super_secret_key_2026";
 
 /**
- * Generate a cryptographically signed 10-second dynamic QR token
+ * Generate a cryptographically signed 30-second dynamic QR token
  */
 const generateQRTokenHelper = (classId, sessionId) => {
   const payload = {
@@ -21,8 +21,8 @@ const generateQRTokenHelper = (classId, sessionId) => {
     timestamp: Date.now()
   };
 
-  // Sign JWT with 10 seconds expiration
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: "10s" });
+  // Sign JWT with 30 seconds expiration
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: "30s" });
 };
 
 /**
@@ -131,7 +131,7 @@ const getActiveSession = asyncHandler(async (req, res) => {
   const remainingSeconds = Math.max(0, Math.floor((new Date(session.endTime).getTime() - now.getTime()) / 1000));
   const presentCount = await Attendance.countDocuments({ session: session._id, status: "Present" });
 
-  // Generate fresh 10-second signed QR token
+  // Generate fresh 30-second signed QR token
   const qrToken = generateQRTokenHelper(session.classId, session._id);
 
   // Check if current student has already marked attendance for this session
@@ -163,7 +163,7 @@ const getActiveSession = asyncHandler(async (req, res) => {
 });
 
 /**
- * @desc    Fetch/Refresh fresh 10-second dynamic QR token for active session
+ * @desc    Fetch/Refresh fresh 30-second dynamic QR token for active session
  * @route   POST /api/attendance/get-qr
  * @access  Private
  */
@@ -181,7 +181,7 @@ const getQRToken = asyncHandler(async (req, res) => {
   res.json({
     success: true,
     token,
-    expiresIn: 10
+    expiresIn: 30
   });
 });
 
@@ -198,14 +198,14 @@ const verifyQRToken = asyncHandler(async (req, res) => {
     throw new Error("QR token is required for verification.");
   }
 
-  // 1. Verify cryptographic JWT signature & 10-second expiration
+  // 1. Verify cryptographic JWT signature & 30-second expiration
   let decoded;
   try {
     decoded = jwt.verify(token, JWT_SECRET);
   } catch (err) {
     if (err.name === "TokenExpiredError") {
       res.status(400);
-      throw new Error("QR token has expired (10s limit). Please scan fresh QR code.");
+      throw new Error("QR token has expired (30s limit). Please scan fresh QR code.");
     }
     res.status(400);
     throw new Error("Invalid or tampered QR security token.");

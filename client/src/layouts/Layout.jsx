@@ -20,15 +20,20 @@ import {
   ShieldCheck,
   GraduationCap,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Users,
+  Building,
+  History,
+  Calendar
 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useNotifications } from "../context/NotificationContext";
 import authService from "../services/authService";
+import attendifyLogo from "../assets/attendify-logo.png";
 
 export const Layout = ({ children }) => {
   const { theme, toggleTheme } = useTheme();
-  const { notifications, markAllAsRead } = useNotifications();
+  const { notifications, unreadCount: ctxUnreadCount, markAllAsRead } = useNotifications();
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -37,33 +42,63 @@ export const Layout = ({ children }) => {
   const [notifTrayOpen, setNotifTrayOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
-  const currentUser = authService.getCurrentUser() || {
-    name: "Aman Kumar",
-    email: "aman.kumar@attendify.com",
-    role: "student",
-    avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=120"
-  };
+  const [currentUser, setCurrentUser] = useState(() => {
+    return authService.getCurrentUser() || {
+      name: "Aman Kumar",
+      email: "aman.kumar@attendify.com",
+      role: "student",
+      avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=120"
+    };
+  });
+
+  React.useEffect(() => {
+    const handleProfileSync = () => {
+      const updated = authService.getCurrentUser();
+      if (updated) {
+        setCurrentUser(updated);
+      }
+    };
+
+    window.addEventListener("user_profile_updated", handleProfileSync);
+    window.addEventListener("storage", handleProfileSync);
+    return () => {
+      window.removeEventListener("user_profile_updated", handleProfileSync);
+      window.removeEventListener("storage", handleProfileSync);
+    };
+  }, []);
 
   const handleLogout = () => {
     authService.logout();
     navigate("/login");
   };
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = ctxUnreadCount !== undefined ? ctxUnreadCount : notifications.filter(n => !(n.isRead ?? n.read)).length;
 
   const getNavItems = () => {
     if (currentUser.role === "teacher") {
       return [
         { path: "/teacher", label: "Dashboard", icon: LayoutDashboard },
-        { path: "/notifications", label: "Notifications", icon: Bell },
+        { path: "/attendance", label: "Attendance Sessions", icon: UserCheck, highlight: true },
+        { path: "/teacher/students", label: "Students Roster", icon: Users },
         { path: "/analytics", label: "Class Analytics", icon: BarChart3 },
-        { path: "/settings", label: "Settings", icon: Settings }
+        { path: "/curriculum", label: "Course Management", icon: BookOpen },
+        { path: "/notifications", label: "Notifications", icon: Bell },
+        { path: "/profile", label: "Faculty Profile", icon: User },
+        { path: "/settings", label: "System Preferences", icon: Settings }
       ];
     } else if (currentUser.role === "admin") {
       return [
         { path: "/admin", label: "Dashboard", icon: LayoutDashboard },
         { path: "/notifications", label: "Notifications", icon: Bell },
-        { path: "/settings", label: "Settings", icon: Settings }
+        { path: "/admin?tab=Students", label: "User Management", icon: Users },
+        { path: "/admin?tab=Departments", label: "Departments", icon: Building },
+        { path: "/admin?tab=Subjects", label: "Subjects & Courses", icon: BookOpen },
+        { path: "/admin?tab=Timetable", label: "Timetable", icon: Calendar },
+        { path: "/admin?tab=AttendanceLogs", label: "Attendance Logs", icon: UserCheck },
+        { path: "/analytics", label: "Reports", icon: BarChart3 },
+        { path: "/admin?tab=AuditLogs", label: "Audit Logs", icon: History },
+        { path: "/settings", label: "System Settings", icon: Settings },
+        { path: "/profile", label: "Admin Profile", icon: ShieldCheck }
       ];
     } else {
       return [
@@ -98,9 +133,11 @@ export const Layout = ({ children }) => {
         {/* Brand Logo Header */}
         <div className="h-20 flex items-center justify-between px-6 border-b border-slate-200/40 dark:border-slate-900/45">
           <Link to="/" className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-primary to-secondary flex items-center justify-center text-white font-bold shadow-md glow-primary">
-              ⚡
-            </div>
+            <img 
+              src={attendifyLogo} 
+              alt="Attendify Logo" 
+              className="h-9 w-9 rounded-xl object-contain shadow-md flex-shrink-0"
+            />
             {sidebarOpen && (
               <motion.span 
                 initial={{ opacity: 0 }}
@@ -181,24 +218,34 @@ export const Layout = ({ children }) => {
 
       {/* 2. MAIN WORKSPACE */}
       <div 
-        className="flex-1 flex flex-col min-w-0 transition-all duration-200"
-        style={{ paddingLeft: sidebarOpen ? "270px" : "88px" }}
+        className={`flex-1 flex flex-col min-w-0 transition-all duration-200 pl-0 ${
+          sidebarOpen ? "md:pl-[270px]" : "md:pl-[88px]"
+        }`}
       >
         
         {/* HEADER NAVBAR */}
-        <header className="h-20 border-b border-slate-200/40 dark:border-slate-900/60 bg-white/40 dark:bg-[#03060d]/40 backdrop-blur-xl sticky top-0 z-10 flex items-center justify-between px-8">
-          <div className="flex items-center gap-4">
+        <header className="h-20 border-b border-slate-200/40 dark:border-slate-900/60 bg-white/40 dark:bg-[#03060d]/40 backdrop-blur-xl sticky top-0 z-10 flex items-center justify-between px-4 sm:px-6 md:px-8">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileMenuOpen(true)}
               className="md:hidden p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-900/50 text-slate-500"
+              aria-label="Open menu"
             >
               <Menu size={20} />
             </button>
-            <div className="hidden sm:flex items-center bg-slate-100 dark:bg-slate-950/60 border border-slate-200/50 dark:border-slate-900 rounded-xl px-3.5 py-2.5 gap-2 text-slate-400 w-72 max-w-full">
+            <div className="flex md:hidden items-center gap-2">
+              <img 
+                src={attendifyLogo} 
+                alt="Attendify Logo" 
+                className="h-7 w-7 rounded-lg object-contain shadow-sm"
+              />
+              <span className="font-extrabold text-sm text-slate-900 dark:text-white font-sans">Attendify</span>
+            </div>
+            <div className="hidden sm:flex items-center bg-slate-100 dark:bg-slate-950/60 border border-slate-200/50 dark:border-slate-900 rounded-xl px-3.5 py-2.5 gap-2 text-slate-400 w-48 md:w-72 max-w-full">
               <Search size={14} />
               <input
                 type="text"
-                placeholder="Search classes, schedules..."
+                placeholder="Search classes..."
                 className="bg-transparent border-none outline-none text-xs text-slate-700 dark:text-slate-250 placeholder-slate-450 w-full"
               />
             </div>
@@ -370,7 +417,7 @@ export const Layout = ({ children }) => {
         </header>
 
         {/* MAIN PANEL CONTENT */}
-        <main className="flex-1 p-6 md:p-10 overflow-y-auto max-w-7xl w-full mx-auto">
+        <main className="flex-1 p-4 sm:p-6 md:p-8 lg:p-10 max-w-7xl w-full mx-auto min-w-0 overflow-x-hidden">
           {children}
         </main>
         
@@ -400,9 +447,11 @@ export const Layout = ({ children }) => {
             >
               <div className="flex items-center justify-between mb-8">
                 <Link to="/" className="flex items-center gap-2.5" onClick={() => setMobileMenuOpen(false)}>
-                  <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-primary to-secondary flex items-center justify-center text-white font-bold shadow-md">
-                    ⚡
-                  </div>
+                  <img 
+                    src={attendifyLogo} 
+                    alt="Attendify Logo" 
+                    className="h-9 w-9 rounded-xl object-contain shadow-md flex-shrink-0"
+                  />
                   <span className="font-extrabold text-base text-slate-900 dark:text-white">Attendify</span>
                 </Link>
                 <button

@@ -35,7 +35,15 @@ const userSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      default: "+1 (555) 019-2834"
+      default: "9876543210",
+      validate: {
+        validator: function (v) {
+          if (!v) return true;
+          const clean = String(v).replace(/^(\+91|\+91\s*)/, "").replace(/\D/g, "");
+          return /^[6-9][0-9]{9}$/.test(clean);
+        },
+        message: "Please enter a valid 10-digit Indian mobile number."
+      }
     },
     notificationPreferences: {
       attendance: { type: Boolean, default: true },

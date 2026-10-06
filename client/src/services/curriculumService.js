@@ -5,65 +5,28 @@ export const curriculumService = {
    * Fetch timetable entries via GET /api/timetable
    */
   getTimetable: async (params = {}) => {
-    try {
-      const response = await api.get("/timetable", { params });
-      return response.data?.timetable || [];
-    } catch (error) {
-      console.warn("Failed to fetch timetable from API:", error.message);
-      return [];
-    }
+    const response = await api.get("/timetable", { params });
+    return response.data?.timetable || [];
   },
 
-  /**
-   * Fetch subjects from Subject collection via GET /api/subjects
-   */
   getSubjects: async () => {
-    try {
-      const response = await api.get("/subjects");
-      return response.data?.subjects || [];
-    } catch (error) {
-      console.warn("Failed to fetch subjects from API:", error.message);
-      return [];
-    }
+    const response = await api.get("/subjects");
+    return response.data?.subjects || [];
   },
 
-  /**
-   * Fetch assignments via GET /api/assignments
-   */
   getAssignments: async (params = {}) => {
-    try {
-      const response = await api.get("/assignments", { params });
-      return response.data?.assignments || [];
-    } catch (error) {
-      console.warn("Failed to fetch assignments from API:", error.message);
-      return [];
-    }
+    const response = await api.get("/assignments", { params });
+    return response.data?.assignments || [];
   },
 
-  /**
-   * Fetch exam schedules via GET /api/exams
-   */
   getExams: async (params = {}) => {
-    try {
-      const response = await api.get("/exams", { params });
-      return response.data?.exams || [];
-    } catch (error) {
-      console.warn("Failed to fetch exams from API:", error.message);
-      return [];
-    }
+    const response = await api.get("/exams", { params });
+    return response.data?.exams || [];
   },
 
-  /**
-   * Fetch user notifications via GET /api/notifications
-   */
   getNotifications: async () => {
-    try {
-      const response = await api.get("/notifications");
-      return response.data?.notifications || [];
-    } catch (error) {
-      console.warn("Failed to fetch notifications from API:", error.message);
-      return [];
-    }
+    const response = await api.get("/notifications");
+    return response.data?.notifications || [];
   },
 
   /**

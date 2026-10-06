@@ -132,6 +132,7 @@ const getStudentAnalytics = asyncHandler(async (req, res) => {
     {
       $group: {
         _id: "$subject",
+        faculty: { $first: "$faculty" },
         total: { $sum: 1 },
         present: { $sum: { $cond: [{ $eq: ["$status", "Present"] }, 1, 0] } },
         absent: { $sum: { $cond: [{ $eq: ["$status", "Absent"] }, 1, 0] } },
@@ -160,6 +161,7 @@ const getStudentAnalytics = asyncHandler(async (req, res) => {
 
     return {
       subject: s._id || "General",
+      faculty: s.faculty || "Faculty Member",
       total: s.total,
       present: s.present,
       absent: s.absent,

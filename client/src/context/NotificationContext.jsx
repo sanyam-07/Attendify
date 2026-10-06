@@ -9,6 +9,7 @@ export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchNotifications = useCallback(async () => {
     const user = authService.getCurrentUser();
@@ -20,15 +21,17 @@ export const NotificationProvider = ({ children }) => {
     }
 
     try {
+      setError(null);
       const [list, count] = await Promise.all([
         notificationService.getNotifications(),
         notificationService.getUnreadCount()
       ]);
 
-      setNotifications(list);
-      setUnreadCount(count);
+      setNotifications(list || []);
+      setUnreadCount(typeof count === "number" ? count : 0);
     } catch (err) {
       console.warn("Failed to fetch notifications from backend:", err);
+      setError("Unable to load notifications. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -42,25 +45,32 @@ export const NotificationProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, [fetchNotifications]);
 
-  const markAsRead = async (id) => {
+  const markAsRead = async (id, targetState = true) => {
     try {
-      await notificationService.markAsRead(id);
+      await notificationService.markAsRead(id, targetState);
       setNotifications(prev =>
-        prev.map(n => (n._id === id || n.id === id ? { ...n, isRead: true } : n))
+        prev.map(n => ((n._id === id || n.id === id) ? { ...n, isRead: targetState, read: targetState } : n))
       );
-      setUnreadCount(prev => Math.max(0, prev - 1));
+      const updatedCount = await notificationService.getUnreadCount();
+      setUnreadCount(updatedCount);
+      toast.success(targetState ? "Notification marked as read" : "Notification marked as unread");
     } catch (err) {
-      console.error("Failed to mark notification as read:", err);
+      console.error("Failed to mark notification state:", err);
+      const msg = err?.response?.data?.message || err.message || "Failed to update notification state";
+      toast.error(msg);
     }
   };
 
   const markAllAsRead = async () => {
     try {
       await notificationService.markAllAsRead();
-      setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+      setNotifications(prev => prev.map(n => ({ ...n, isRead: true, read: true })));
       setUnreadCount(0);
+      toast.success("All notifications marked as read!");
     } catch (err) {
       console.error("Failed to mark all as read:", err);
+      const msg = err?.response?.data?.message || err.message || "Failed to mark all notifications as read";
+      toast.error(msg);
     }
   };
 
@@ -68,9 +78,13 @@ export const NotificationProvider = ({ children }) => {
     try {
       await notificationService.deleteNotification(id);
       setNotifications(prev => prev.filter(n => n._id !== id && n.id !== id));
-      fetchNotifications();
+      const updatedCount = await notificationService.getUnreadCount();
+      setUnreadCount(updatedCount);
+      toast.success("Notification deleted.");
     } catch (err) {
       console.error("Failed to delete notification:", err);
+      const msg = err?.response?.data?.message || err.message || "Failed to delete notification";
+      toast.error(msg);
     }
   };
 
@@ -80,6 +94,7 @@ export const NotificationProvider = ({ children }) => {
         notifications,
         unreadCount,
         loading,
+        error,
         fetchNotifications,
         markAsRead,
         markAllAsRead,

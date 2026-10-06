@@ -1,5 +1,5 @@
 // Attendance Routes
-// Endpoints for starting sessions, stopping sessions, active session state, 10s QR token generation, QR verification, marking check-ins, and history logs.
+// Endpoints for starting sessions, stopping sessions, active session state, 30s QR token generation, QR verification, marking check-ins, and history logs.
 
 const express = require("express");
 const router = express.Router();

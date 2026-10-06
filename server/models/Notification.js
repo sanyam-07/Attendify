@@ -27,6 +27,12 @@ const notificationSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
+    readBy: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+      }
+    ],
     type: {
       type: String,
       enum: ["Attendance", "Assignment", "Exam", "Timetable", "System", "Announcement"],

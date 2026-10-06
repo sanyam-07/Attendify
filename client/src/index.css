@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-primary: #2563eb;
   --color-primary-dark: #1d4ed8;
@@ -123,4 +125,31 @@
 
 .animate-leave {
   animation: leave 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* HTML5 QR Reader Container Video Styles */
+#qr-reader-container video {
+  width: 100% !important;
+  height: 100% !important;
+  max-height: 280px !important;
+  object-fit: cover !important;
+  border-radius: 1rem !important;
+  display: block !important;
+}
+
+#qr-reader-container {
+  border: none !important;
+  background: transparent !important;
+}
+
+#qr-reader-container__scan_region {
+  background: transparent !important;
+}
+
+#qr-reader-container__scan_region img {
+  display: none !important;
+}
+
+#qr-reader-container__dashboard {
+  display: none !important;
 }

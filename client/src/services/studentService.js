@@ -97,6 +97,29 @@ export const studentService = {
   },
 
   /**
+   * Update student profile details via PUT /api/auth/me
+   */
+  updateProfile: async (updateData) => {
+    try {
+      const response = await api.put("/auth/me", updateData);
+      if (response.data && response.data.success) {
+        localStorage.setItem("attendify_user", JSON.stringify(response.data.user));
+        return response.data.user;
+      }
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw error;
+    }
+    const saved = localStorage.getItem("attendify_user");
+    const current = saved ? JSON.parse(saved) : {};
+    const updated = { ...current, ...updateData };
+    localStorage.setItem("attendify_user", JSON.stringify(updated));
+    return updated;
+  },
+
+  /**
    * Register face biometrics
    */
   registerFace: async (payload) => {
@@ -117,49 +140,52 @@ export const studentService = {
       ]);
 
       const formattedSubjects = subjects.map(s => ({
+        _id: s._id,
         code: s.code,
         subject: s.name,
-        faculty: s.teacherName || "Faculty Member",
-        syllabus: s.syllabusPercentage || 85
+        name: s.name,
+        departmentName: s.departmentName,
+        teacher: s.teacher,
+        faculty: (s.teacher && s.teacher.name) ? s.teacher.name : (s.teacherName || "Faculty Member"),
+        credits: s.credits || 4,
+        syllabusPercentage: s.syllabusPercentage || 85
       }));
 
       const formattedAssignments = assignments.map(a => ({
         id: a._id,
+        _id: a._id,
         title: a.title,
+        description: a.description,
         subject: a.subject,
+        faculty: (a.teacher && a.teacher.name) ? a.teacher.name : (a.teacherName || "Faculty Member"),
         due: new Date(a.dueDate).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }),
+        dueDate: a.dueDate,
         status: a.status || "Pending",
         grade: a.grade || "-"
       }));
 
       const formattedExams = exams.map(e => ({
         id: e._id,
+        _id: e._id,
         title: e.title,
         subject: e.subject,
+        examType: e.examType,
+        room: e.room,
         date: new Date(e.examDate).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }),
-        time: e.duration || "2 Hours",
+        examDate: e.examDate,
+        duration: e.duration || "2 Hours",
+        totalMarks: e.totalMarks || 100,
         portion: `${e.examType} - ${e.room}`
       }));
 
       return {
-        subjects: formattedSubjects.length ? formattedSubjects : [
-          { code: "CS601", subject: "AI & Machine Learning", faculty: "Dr. Rahul Sharma", syllabus: 85 },
-          { code: "CS602", subject: "Database Management Systems", faculty: "Prof. Amit Verma", syllabus: 78 }
-        ],
-        assignments: formattedAssignments.length ? formattedAssignments : [
-          { id: "asg1", title: "Neural Network Architecture Optimization", subject: "AI & Machine Learning", due: "3 Days", status: "Pending", grade: "-" }
-        ],
-        exams: formattedExams.length ? formattedExams : [
-          { id: "ex1", title: "Mid-Term Evaluation", subject: "AI & Machine Learning", date: "Next Week", time: "2 Hours", portion: "Units 1 to 3 - Lab-3" }
-        ]
+        subjects: formattedSubjects,
+        assignments: formattedAssignments,
+        exams: formattedExams
       };
     } catch (err) {
-      console.warn("Failed to load live curriculum data, falling back:", err.message);
-      return {
-        subjects: [],
-        assignments: [],
-        exams: []
-      };
+      console.warn("Failed to load live curriculum data:", err.message);
+      throw err;
     }
   },
 

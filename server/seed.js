@@ -48,7 +48,7 @@ const seedData = async () => {
       email: "admin@attendify.com",
       password: "password123",
       role: "admin",
-      phone: "+91 98765 43200"
+      phone: "9876543200"
     });
 
     console.log("Creating 3 Teachers...");
@@ -65,7 +65,7 @@ const seedData = async () => {
         email: t.email,
         password: "password123",
         role: "teacher",
-        phone: "+91 98765 43201"
+        phone: "9876543201"
       });
 
       const teacherDoc = await Teacher.create({
@@ -115,7 +115,7 @@ const seedData = async () => {
       const emailParts = name.toLowerCase().split(" ");
       const email = `${emailParts[0]}.${emailParts[1]}@attendify.com`;
       const enrollmentNo = `CS2026${1001 + i}`;
-      const phone = `+91 98765 432${(10 + i).toString().padStart(2, '0')}`;
+      const phone = `98765432${(10 + i).toString().padStart(2, '0')}`;
 
       const u = await User.create({
         name,
@@ -217,6 +217,52 @@ const seedData = async () => {
         verifiedAt: new Date(Date.now() - i * 24 * 60 * 60 * 1000)
       });
     }
+
+    console.log("Creating Audit Logs...");
+    const AuditLog = require("./models/AuditLog");
+    await AuditLog.deleteMany();
+    await AuditLog.insertMany([
+      {
+        admin: adminUser._id,
+        adminName: "System Admin",
+        action: "Suspicious Spoof Attempt Detected",
+        entityType: "User",
+        description: "Spoof/replay attempt detected for Aman Kumar (Liveness Score: 42.1%).",
+        createdAt: new Date(Date.now() - 15 * 60 * 1000)
+      },
+      {
+        admin: adminUser._id,
+        adminName: "System Admin",
+        action: "Multiple Faces Detected",
+        entityType: "User",
+        description: "Verification rejected for Rohit Sharma: multiple faces detected in frame.",
+        createdAt: new Date(Date.now() - 45 * 60 * 1000)
+      },
+      {
+        admin: adminUser._id,
+        adminName: "System Admin",
+        action: "Attendance Session Started",
+        entityType: "Session",
+        description: "Dr. Rahul Sharma started a Web Technologies attendance session in Lab-1.",
+        createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000)
+      },
+      {
+        admin: adminUser._id,
+        adminName: "System Admin",
+        action: "Face Verification Failed",
+        entityType: "User",
+        description: "Face verification threshold check failed for Ananya Singh.",
+        createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000)
+      },
+      {
+        admin: adminUser._id,
+        adminName: "System Admin",
+        action: "System Backup Completed",
+        entityType: "User",
+        description: "Automated daily biometric vector database snapshot generated.",
+        createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000)
+      }
+    ]);
 
     console.log("\n================================================");
     console.log("✅ DATABASE SEEDING COMPLETED SUCCESSFULLY!");

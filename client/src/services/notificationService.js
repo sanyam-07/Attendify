@@ -30,11 +30,11 @@ export const notificationService = {
   },
 
   /**
-   * Mark single notification as read
+   * Mark single notification as read or unread
    * PUT /api/notifications/:id/read
    */
-  markAsRead: async (id) => {
-    const response = await api.put(`/notifications/${id}/read`);
+  markAsRead: async (id, isRead = true) => {
+    const response = await api.put(`/notifications/${id}/read`, { isRead });
     return response.data;
   },
 

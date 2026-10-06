@@ -89,7 +89,7 @@ export const attendanceService = {
   },
 
   /**
-   * Fetch a fresh 10-second signed QR token from backend API via POST /api/attendance/get-qr
+   * Fetch a fresh 30-second signed QR token from backend API via POST /api/attendance/get-qr
    */
   getQRToken: async (classId) => {
     try {
@@ -104,7 +104,7 @@ export const attendanceService = {
   },
 
   /**
-   * Verify scanned 10-second QR token via POST /api/attendance/verify-qr
+   * Verify scanned 30-second QR token via POST /api/attendance/verify-qr
    */
   verifyQRToken: async (token) => {
     try {

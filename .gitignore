@@ -75,3 +75,5 @@ temp/
 # ==========================
 *.zip
 oxlint_output.txt
+# Antigravity temporary files
+scratch/
